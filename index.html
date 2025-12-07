@@ -9,6 +9,7 @@
     <link
         href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap'
         rel='stylesheet'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         :root {
@@ -16,15 +17,12 @@
             --accent-dark: #2f3640;
         }
 
-        /* -------------------- GLOBAL -------------------- */
         body {
             margin: 0;
             font-family: 'Kanit', sans-serif;
-
             background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #f6d365);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
-
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -66,7 +64,6 @@
             margin-top: 0.5rem;
         }
 
-        /* -------------------- HEADER -------------------- */
         .header-title {
             font-family: 'Cormorant Garamond', serif;
             font-weight: 600;
@@ -89,26 +86,18 @@
             color: #444;
         }
 
-        /* -------------------- GLASS LOGIN CARD -------------------- */
         .login-card {
             margin-top: 35px;
             position: relative;
             width: 100%;
             max-width: 380px;
             padding: 32px 28px;
-
-            /* GLASS EFFECT ขาวขุ่น */
             background: rgba(255, 255, 255, 0.32);
             border-radius: 26px;
             border: 1px solid rgba(255, 255, 255, 0.55);
-
             backdrop-filter: blur(22px) saturate(180%);
             -webkit-backdrop-filter: blur(22px) saturate(180%);
-
-            box-shadow:
-                0 18px 40px rgba(0, 0, 0, 0.18),
-                inset 0 0 40px rgba(255, 255, 255, 0.25);
-
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18), inset 0 0 40px rgba(255, 255, 255, 0.25);
             overflow: hidden;
         }
 
@@ -118,12 +107,7 @@
             inset: 0;
             border-radius: inherit;
             pointer-events: none;
-
-            /* inner glow */
-            background: linear-gradient(140deg,
-                    rgba(255, 255, 255, 0.35) 0%,
-                    rgba(255, 255, 255, 0.12) 40%,
-                    rgba(255, 255, 255, 0) 100%);
+            background: linear-gradient(140deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.12) 40%, rgba(255, 255, 255, 0) 100%);
             opacity: 0.6;
         }
 
@@ -215,6 +199,17 @@
             color: #ffffffd5;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
         }
+
+        #error-msg {
+            color: #e74c3c;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+            display: none;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            border-radius: 8px;
+        }
     </style>
 </head>
 
@@ -231,22 +226,81 @@
         <div class='login-title'>เข้าสู่ระบบ</div>
         <div class='login-subtitle'>ระบบตู้ยาอัจฉริยะ</div>
 
-        <form method='GET' action='/login'>
+        <div id="error-msg"></div>
+
+        <form id="loginForm">
             <div class='input-group'>
-                <label>ชื่อผู้ใช้</label>
-                <input type='text' name='user' required>
+                <label>ชื่อผู้ใช้ (Username)</label>
+                <input type='text' id="username" required>
             </div>
 
             <div class='input-group'>
-                <label>รหัสผ่าน</label>
-                <input type='password' name='pass' required>
+                <label>รหัสผ่าน (Password)</label>
+                <input type='password' id="password" required>
             </div>
 
-            <button type='submit'>เข้าสู่ระบบ</button>
+            <button type='submit' id="btnLogin">เข้าสู่ระบบ</button>
         </form>
     </div>
 
     <div class='footer-credit'>Engineering Project • Crafted with Passion</div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+
+        // 🔥 Config เดิมของคุณ (จากไฟล์ index.html)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
+            authDomain: "slot-drug.firebaseapp.com",
+            projectId: "slot-drug",
+            storageBucket: "slot-drug.firebasestorage.app",
+            messagingSenderId: "805318911272",
+            appId: "1:805318911272:web:d5c569063937d56eb01c1d"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loginForm = document.getElementById('loginForm');
+        const errorMsg = document.getElementById('error-msg');
+        const btnLogin = document.getElementById('btnLogin');
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            let username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            // 🔥 เทคนิคพิเศษ: ถ้า User พิมพ์มาแค่ "admin" ให้เติมโดเมนเข้าไปเอง
+            if (!username.includes('@')) {
+                username = username + "@smartcabinet.com";
+            }
+
+            btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังตรวจสอบ...';
+            btnLogin.disabled = true;
+            errorMsg.style.display = 'none';
+
+            signInWithEmailAndPassword(auth, username, password)
+                .then((userCredential) => {
+                    // ✅ ล็อกอินสำเร็จ -> ไปหน้าตู้ยา
+                    window.location.href = "index.html";
+                })
+                .catch((error) => {
+                    // ❌ ล็อกอินพลาด
+                    console.error(error.code);
+                    let msg = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+                    if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-email') msg = "ไม่พบชื่อผู้ใช้นี้";
+                    if (error.code === 'auth/wrong-password') msg = "รหัสผ่านผิด";
+                    if (error.code === 'auth/too-many-requests') msg = "ลองใหม่ภายหลัง (ลองผิดเยอะเกิน)";
+
+                    errorMsg.innerText = msg;
+                    errorMsg.style.display = 'block';
+                    btnLogin.innerHTML = 'เข้าสู่ระบบ';
+                    btnLogin.disabled = false;
+                });
+        });
+    </script>
 
 </body>
 
