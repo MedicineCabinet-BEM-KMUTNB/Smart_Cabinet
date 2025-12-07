@@ -262,18 +262,22 @@
             font-family: 'Kanit', sans-serif;
             font-size: 0.95rem;
             padding: 12px 16px;
-            
+
             /* --- ส่วนที่เพิ่มใหม่สำหรับลูกศร --- */
-            appearance: none; /* ลบ style เดิมของ browser */
+            appearance: none;
+            /* ลบ style เดิมของ browser */
             -webkit-appearance: none;
             -moz-appearance: none;
-            
+
             /* ใส่รูป icon ลูกศร (SVG เพื่อความคมชัด) */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232c3e50' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 16px center; /* จัดตำแหน่งให้อยู่ขวา */
-            background-size: 16px; /* ขนาด icon */
-            padding-right: 40px; /* เผื่อพื้นที่ไม่ให้ข้อความทับ icon */
+            background-position: right 16px center;
+            /* จัดตำแหน่งให้อยู่ขวา */
+            background-size: 16px;
+            /* ขนาด icon */
+            padding-right: 40px;
+            /* เผื่อพื้นที่ไม่ให้ข้อความทับ icon */
             cursor: pointer;
         }
 
@@ -343,8 +347,8 @@
     <div class="text-center mb-3 mt-4">
         <h1 class="header-title display-3">Smart Cabinet</h1>
         <div class="top-bar">
-            <div class="creator-badge">DESIGNED BY <span
-                    style="color: #d35400; font-weight: 700; margin-left: 6px;">BME KMUTNB</span></div>
+            <div class="creator-badge">DESIGNED BY <span style="color: #d35400; font-weight: 700; margin-left: 6px;">BME
+                    KMUTNB</span></div>
             <button class="btn btn-sm btn-manage-list" onclick="openManageMedList()">
                 <i class="fas fa-list-ul me-1"></i> รายชื่อยาที่สแกน
             </button>
@@ -394,7 +398,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-           
+
                     <hr class="mt-1 mb-2">
                     <div style="max-height: 350px; overflow-y: auto;">
                         <ul id="medListManager" class="list-group" style="background:none;">
@@ -438,17 +442,17 @@
                 loadSlotsFromFirebase();
                 loadMedListFromFirebase();
             } else {
-                window.location.href = "index.html"; 
+                window.location.href = "index.html";
             }
         });
 
-        window.logout = function() {
+        window.logout = function () {
             signOut(auth).then(() => { window.location.href = "index.html"; }).catch((error) => { alert("Logout Failed"); });
         };
 
-        let globalSlots = []; 
+        let globalSlots = [];
         let currentSlotIndex = null;
-        
+
         // --- Medicine List Logic ---
         const medListRef = ref(db, 'drugs');
 
@@ -456,7 +460,7 @@
             onValue(medListRef, (snapshot) => {
                 const select = document.getElementById("medList");
                 const ul = document.getElementById("medListManager");
-                
+
                 select.innerHTML = "";
                 ul.innerHTML = "";
                 let hasData = false;
@@ -466,8 +470,8 @@
                     const data = snapshot.val();
                     Object.keys(data).forEach((key) => {
                         const drugItem = data[key];
-                        const drugName = drugItem.name ? drugItem.name : key; 
-                        
+                        const drugName = drugItem.name ? drugItem.name : key;
+
                         const opt = document.createElement("option");
                         opt.value = drugName;
                         opt.textContent = drugName;
@@ -485,20 +489,20 @@
                         `;
                         ul.appendChild(li);
                     });
-                } 
+                }
                 if (!hasData) {
                     ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
                 }
             });
         }
 
-        window.deleteMedicine = function(key) {
-            if(confirm("ต้องการลบยา '" + key + "' ออกจากฐานข้อมูลหรือไม่?")) {
+        window.deleteMedicine = function (key) {
+            if (confirm("ต้องการลบยา '" + key + "' ออกจากฐานข้อมูลหรือไม่?")) {
                 remove(ref(db, 'drugs/' + key)).catch((error) => { alert("ลบไม่สำเร็จ: " + error.message); });
             }
         };
 
-        window.openManageMedList = function() {
+        window.openManageMedList = function () {
             new bootstrap.Modal(document.getElementById('manageMedModal')).show();
         };
 
@@ -516,7 +520,7 @@
                 } else {
                     globalSlots = [];
                 }
-                if(!globalSlots) globalSlots = [];
+                if (!globalSlots) globalSlots = [];
                 renderSlots();
             });
         }
@@ -527,7 +531,7 @@
 
             globalSlots.forEach((s, index) => {
                 const filled = s.name !== "Empty Slot";
-                const displayNum = String(index + 1).padStart(2,'0');
+                const displayNum = String(index + 1).padStart(2, '0');
                 s.slot = index + 1;
 
                 // 🔥 แสดงเวลาที่เพิ่ม (ถ้ามี)
@@ -567,55 +571,73 @@
             });
         }
 
-        function saveToFirebase() {
-            set(ref(db, "slots"), globalSlots).catch((error) => { alert("บันทึกไม่สำเร็จ!"); });
-        }
+        window.saveToFirebase = function() {
+    // 1️⃣ ส่วนสำคัญ: บังคับเรียงเลข Slot ใหม่ทั้งหมด ให้ตรงกับลำดับ Array 0,1,2...
+    if (Array.isArray(globalSlots)) {
+        globalSlots.forEach((item, index) => {
+            // Index 0 -> ให้เป็น Slot 1
+            // Index 1 -> ให้เป็น Slot 2
+            if (item) { // เช็คกัน error ว่า item ไม่ใช่ null
+                item.slot = index + 1;
+            }
+        });
+    }
+
+    // 2️⃣ ส่งข้อมูลที่แก้เลขแล้ว ขึ้น Firebase
+    set(ref(db, "slots"), globalSlots)
+        .then(() => {
+            console.log("✅ Data synced & Re-indexed successfully");
+        })
+        .catch((error) => { 
+            alert("บันทึกไม่สำเร็จ: " + error.message); 
+        });
+}
 
         // --- Button Actions ---
-        window.addSlot = function() {
+        window.addSlot = function () {
             if (!Array.isArray(globalSlots)) globalSlots = [];
             const nextNum = globalSlots.length + 1;
-            
+
             // 🔥 สร้างเวลาปัจจุบัน (เช่น "10:30:45")
             const now = new Date();
             const timeString = now.toLocaleTimeString('th-TH'); // หรือ 'en-US' แล้วแต่ชอบ
 
-            globalSlots.push({ 
-                slot: nextNum, 
-                name: "Empty Slot", 
+            globalSlots.push({
+                slot: nextNum,
+                name: "Empty Slot",
                 detail: "Available for new item",
                 createdAt: timeString // 🔥 บันทึกเวลาลงไป
             });
             saveToFirebase();
         };
 
-        window.removeLastSlot = function() {
+        window.removeLastSlot = function () {
             if (globalSlots && globalSlots.length > 0) {
-                globalSlots.pop(); 
+                globalSlots.pop();
                 saveToFirebase();
             }
         };
 
-        window.deleteSpecificSlot = function(index) {
-            if(confirm("ต้องการลบ Slot นี้ใช่หรือไม่?")) {
+        window.deleteSpecificSlot = function (index) {
+            if (confirm("ต้องการลบ Slot นี้ใช่หรือไม่?")) {
                 globalSlots.splice(index, 1);
                 saveToFirebase();
             }
         };
 
-        window.editMedicine = function(index) {
+        window.editMedicine = function (index) {
             currentSlotIndex = index;
             new bootstrap.Modal(document.getElementById('selectMedModal')).show();
         };
 
-        window.applySelectedMed = function() {
+        window.applySelectedMed = function () {
             const name = document.getElementById("medList").value;
             if (globalSlots[currentSlotIndex]) {
                 globalSlots[currentSlotIndex].name = name;
                 globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
                 // (ถ้าอยากให้อัปเดตเวลาตอน "แก้ไข" ด้วย ให้ uncomment บรรทัดล่าง)
                 // globalSlots[currentSlotIndex].createdAt = new Date().toLocaleTimeString('th-TH');
-                
+
                 saveToFirebase();
             }
             bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
