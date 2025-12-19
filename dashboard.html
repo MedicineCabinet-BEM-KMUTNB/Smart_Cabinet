@@ -15,7 +15,7 @@
     <style>
         /* ================= CSS Styles ================= */
         :root {
-            --phyathai-light-green: #8bcfae;
+            --phyathai-light-green: #2f6f5e;
             --card-bg: rgba(255, 255, 255, 0.95);
             --accent-orange: #ff9f43;
             --accent-green: #2ecc71;
@@ -39,15 +39,26 @@
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         body::before {
             content: "";
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: -1;
@@ -115,7 +126,7 @@
             overflow: hidden;
             border: 1px solid rgba(255, 255, 255, 0.8);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
-            min-height: 200px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -136,7 +147,8 @@
             font-style: italic;
             color: rgba(0, 0, 0, 0.03);
             position: absolute;
-            left: 50%; top: 50%;
+            left: 50%;
+            top: 50%;
             transform: translate(-50%, -50%);
             z-index: 0;
             pointer-events: none;
@@ -144,7 +156,8 @@
 
         .slot-badge-label {
             position: absolute;
-            top: 0; left: 0;
+            top: 0;
+            left: 0;
             background: #2f3640;
             color: #fff;
             padding: 5px 15px 5px 20px;
@@ -159,7 +172,8 @@
 
         .card-content {
             z-index: 1;
-            padding-left: 5px; padding-right: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
             margin-bottom: 30px;
             text-align: center;
             width: 100%;
@@ -179,51 +193,96 @@
             color: #7f8c8d;
         }
 
+        /* CSS สำหรับ List รายละเอียด (Generic, Dosage, Strength) */
+        .med-detail-list {
+            background: rgba(240, 242, 245, 0.6);
+            border-radius: 12px;
+            padding: 10px;
+            margin-top: 8px;
+            text-align: left;
+            font-size: 0.85rem;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: inline-block;
+            min-width: 85%;
+        }
+
+        .med-detail-row {
+            margin-bottom: 3px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .med-detail-label {
+            font-weight: 600;
+            color: #636e72;
+            margin-right: 8px;
+            white-space: nowrap;
+        }
+
+        .med-detail-value {
+            color: #2d3436;
+            text-align: right;
+            word-break: break-word;
+        }
+
         .btn-fab {
-            width: 50px; height: 50px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             border: none;
             background: #f1f2f6;
             color: #2f3542;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             transition: 0.2s;
             cursor: pointer;
             z-index: 5;
             position: absolute;
-            bottom: 20px; right: 20px;
+            bottom: 20px;
+            right: 20px;
         }
 
         .btn-fab:hover {
-            background: var(--accent-orange); color: #fff;
+            background: var(--accent-orange);
+            color: #fff;
             box-shadow: 0 5px 15px rgba(255, 159, 67, 0.6);
         }
 
         .btn-fab-add {
-            background: #e8f5e9; color: var(--accent-green);
+            background: #e8f5e9;
+            color: var(--accent-green);
         }
 
         .btn-fab-add:hover {
-            background: var(--accent-green); color: #fff;
+            background: var(--accent-green);
+            color: #fff;
             box-shadow: 0 5px 15px rgba(46, 204, 113, 0.5);
         }
 
         .btn-fab-delete {
-            width: 32px; height: 32px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             border: 1px solid #fab1a0;
             background: rgba(255, 255, 255, 0.8);
             color: #e17055;
-            display: flex; align-items: center; justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
             z-index: 5;
             transition: 0.2s;
             font-size: 0.8rem;
             position: absolute;
-            top: 15px; right: 15px;
+            top: 15px;
+            right: 15px;
         }
 
         .btn-fab-delete:hover {
-            background: #e17055; color: white; border-color: #e17055;
+            background: #e17055;
+            color: white;
+            border-color: #e17055;
         }
 
         .footer-credit {
@@ -275,11 +334,24 @@
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.85);
             background: rgba(255, 255, 255, 0.35);
-            font-family: 'Outfit', sans-serif;
+            font-family: 'Kanit', sans-serif;
             font-size: 0.75rem;
             text-transform: uppercase;
             height: 40px;
             padding: 7px 16px;
+            transition: all 0.2s;
+        }
+
+        .btn-add-med {
+            background: rgba(46, 204, 113, 0.15);
+            color: #27ae60;
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-add-med:hover {
+            background: #27ae60;
+            color: white;
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
         }
 
         .btn-glam-primary {
@@ -330,7 +402,6 @@
             color: white;
         }
 
-        /* Badge แสดงชื่อผู้แก้ไข */
         .user-edit-badge {
             background: rgba(116, 185, 255, 0.15);
             color: #0984e3;
@@ -365,6 +436,9 @@
                 <span>Phyathai 3 Hospital</span>
             </div>
 
+            <button class="btn btn-sm btn-manage-list btn-add-med" onclick="goToAddMedicine()">
+                <i class="fas fa-plus-square me-1"></i> เพิ่มข้อมูลยาใหม่
+            </button>
 
             <button class="btn btn-sm btn-manage-list" onclick="openManageMedList()">
                 <i class="fas fa-list-ul me-1"></i> รายชื่อยาที่สแกน
@@ -383,14 +457,11 @@
 
     <div class="container" style="max-width: 900px;">
         <div class="row g-4" id="slotContainer">
-            </div>
+        </div>
 
         <div class="d-flex justify-content-center gap-4 mt-5">
             <button class="btn btn-glam-primary rounded-pill px-4" onclick="addSlot()">
                 <i class="fas fa-plus-circle me-2"></i> เพิ่ม Slot
-            </button>
-            <button class="btn btn-glam-danger rounded-pill px-4" onclick="removeLastSlot()">
-                <i class="fas fa-minus-circle me-2"></i> ลด Slot
             </button>
         </div>
     </div>
@@ -404,32 +475,43 @@
                     <h5 class="modal-title glam-modal-title">เลือกชื่อยา</h5><button type="button" class="btn-close"
                         data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body"><label class="form-label mb-2"
-                        style="font-family:'Outfit';font-size:0.8rem;text-transform:uppercase;">Select from
-                        list</label><select id="medList" class="form-select glam-select"></select></div>
-                <div class="modal-footer" style="border-top:none;"><button class="btn btn-glam-secondary"
-                        data-bs-dismiss="modal">ยกเลิก</button><button class="btn btn-glam-primary"
-                        onclick="applySelectedMed()">บันทึก</button></div>
+                <div class="modal-body">
+                    <label class="form-label mb-2"
+                        style="font-family:'Outfit';font-size:0.8rem;text-transform:uppercase;">Select from list</label>
+                    <select id="medList" class="form-select glam-select"></select>
+                </div>
+                <div class="modal-footer" style="border-top:none;">
+                    <button class="btn btn-glam-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button class="btn btn-glam-primary" onclick="applySelectedMed()">บันทึก</button>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="manageMedModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content glam-modal">
                 <div class="modal-header" style="border-bottom:none;">
-                    <h5 class="modal-title glam-modal-title text-center">รายการยาทั้งหมด</h5>
+                    <h5 class="modal-title glam-modal-title text-center">จัดการรายชื่อยา</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <hr class="mt-1 mb-2">
-                    <div style="max-height: 350px; overflow-y: auto;">
+                    <div class="d-flex align-items-center mb-2 px-3 pb-2 border-bottom">
+                        <input type="checkbox" id="selectAllCheckbox" class="form-check-input me-2"
+                            onchange="toggleSelectAll()">
+                        <label for="selectAllCheckbox" class="form-label mb-0 small text-muted">เลือกทั้งหมด</label>
+                    </div>
+
+                    <div style="max-height: 450px; overflow-y: auto;">
                         <ul id="medListManager" class="list-group" style="background:none;">
                             <li class="list-group-item text-center text-muted">รอการสแกน...</li>
                         </ul>
                     </div>
                 </div>
-                <div class="modal-footer" style="border-top:none;">
+                <div class="modal-footer d-flex justify-content-between" style="border-top:none;">
+                    <button class="btn btn-glam-danger" onclick="deleteSelectedMedicines()">
+                        <i class="fas fa-trash-alt me-1"></i> ลบรายการที่เลือก
+                    </button>
                     <button class="btn btn-glam-secondary" data-bs-dismiss="modal">ปิด</button>
                 </div>
             </div>
@@ -440,7 +522,6 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        // ✅ เพิ่ม 'get' เข้ามาใน import
         import { getDatabase, ref, set, get, child, onValue, push, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
@@ -459,52 +540,40 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        // Global Variables
         let globalSlots = [];
         let currentSlotIndex = null;
         let currentUserName = "Loading...";
 
+        let medDataMap = {};
+
+        window.goToAddMedicine = function () {
+            window.location.href = "add_medicine.html";
+        };
+
         // --- Authentication & User Info ---
         onAuthStateChanged(auth, (user) => {
             if (user) {
-                console.log("Logged in UID:", user.uid);
-                
-                // 1. ดึงข้อมูลจาก Database users/{uid} เพื่อเอาชื่อ-นามสกุลจริง
                 const userRef = ref(db, 'users/' + user.uid);
-                
                 get(userRef).then((snapshot) => {
                     let displayName = "";
-                    
                     if (snapshot.exists() && snapshot.val().name) {
-                        // เจอชื่อใน Database (จากการสมัคร)
                         displayName = snapshot.val().name;
                     } else if (user.displayName) {
-                        // ไม่มีใน DB ใช้จาก Auth Profile
                         displayName = user.displayName;
                     } else {
-                        // ไม่มีชื่อเลย ใช้อีเมลแทน
                         displayName = user.email;
                     }
-
                     currentUserName = displayName;
-
-                    // ✅ แสดง Full Name บนหน้าจอ
-                    document.getElementById("currentUserDisplay").innerHTML = 
-                        `<i class="fas fa-user-circle me-1"></i> ผู้ใช้งาน: <strong>${currentUserName}</strong>`;
-
-                    // โหลดข้อมูลยาและสล็อตหลังจากได้ชื่อผู้ใช้แล้ว
+                    document.getElementById("currentUserDisplay").innerHTML =
+                    `<span style="font-family: 'Kanit', sans-serif;"><i class="fas fa-user-circle me-1"></i> ผู้ใช้งาน: <strong>${currentUserName}</strong></span>`;
                     loadSlotsFromFirebase();
                     loadMedListFromFirebase();
-
                 }).catch((error) => {
-                    console.error("Error fetching user data:", error);
                     currentUserName = user.email || "Unknown User";
                     loadSlotsFromFirebase();
                     loadMedListFromFirebase();
                 });
-
             } else {
-                // ถ้าไม่ได้ล็อกอิน ดีดกลับไปหน้า Login
                 window.location.href = "index.html";
             }
         });
@@ -515,7 +584,6 @@
 
         // --- Medicine List Logic ---
         const medListRef = ref(db, 'drugs');
-
         function loadMedListFromFirebase() {
             onValue(medListRef, (snapshot) => {
                 const select = document.getElementById("medList");
@@ -523,6 +591,8 @@
 
                 select.innerHTML = "";
                 ul.innerHTML = "";
+                medDataMap = {};
+
                 let hasData = false;
 
                 if (snapshot.exists()) {
@@ -532,57 +602,94 @@
                         const drugItem = data[key];
                         const drugName = drugItem.name ? drugItem.name : key;
 
-                        // ใส่ใน Dropdown เลือกยา
+                        medDataMap[drugName] = drugItem;
+
+                        // Populate Select Dropdown
                         const opt = document.createElement("option");
                         opt.value = drugName;
-                        opt.textContent = drugName;
+                        opt.textContent = `${drugName} (${drugItem.strength || ''})`;
                         select.appendChild(opt);
 
-                        // ใส่ใน List จัดการยา
+                        // Populate Manager List
+                        const generic = drugItem.genericName || '-'; // <--- เพิ่มตัวแปร Generic Name
+                        const form = drugItem.dosageForm || '-';
+                        const strength = drugItem.strength || '-';
+                        
                         const li = document.createElement("li");
                         li.className = "list-group-item d-flex justify-content-between align-items-center mb-2";
                         li.style.background = "rgba(255,255,255,0.7)";
                         li.style.border = "none";
+
+                        // แก้ไข HTML ด้านล่างเพื่อแสดง Generic Name
                         li.innerHTML = `
-                            <span>${drugName}</span>
-                            <button class="btn btn-sm btn-outline-danger" onclick="deleteMedicine('${key}')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        `;
+                        <div class="d-flex align-items-start" style="width: 100%;">
+                            <input type="checkbox" class="med-checkbox form-check-input mt-1 me-3" value="${key}">
+                            <div class="flex-grow-1">
+                                <div class="fw-bold text-primary mb-0">${drugName}</div>
+                                <div class="text-secondary small fst-italic mb-1">${generic}</div> <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
+                                    <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
+                                    <span class="d-inline-block me-2 border rounded px-1 bg-light">ความแรง: ${strength}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteMedicine('${key}')" title="ลบรายการนี้">
+                            <i class="fas fa-trash"></i>
+                        </button>`;
                         ul.appendChild(li);
                     });
                 }
-                if (!hasData) {
-                    ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
-                }
+                if (!hasData) ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
             });
         }
 
         window.deleteMedicine = function (key) {
-            if (confirm("ต้องการลบยา '" + key + "' ออกจากฐานข้อมูลหรือไม่?")) {
-                remove(ref(db, 'drugs/' + key)).catch((error) => { alert("ลบไม่สำเร็จ: " + error.message); });
+            if (confirm("ต้องการลบยาออกหรือไม่?")) {
+                remove(ref(db, 'drugs/' + key)).catch((error) => { alert("ลบไม่สำเร็จ"); });
             }
         };
 
         window.openManageMedList = function () {
+            const selectAll = document.getElementById('selectAllCheckbox');
+            if (selectAll) selectAll.checked = false;
             new bootstrap.Modal(document.getElementById('manageMedModal')).show();
         };
 
+        window.toggleSelectAll = function () {
+            const isChecked = document.getElementById('selectAllCheckbox').checked;
+            const checkboxes = document.querySelectorAll('.med-checkbox');
+            checkboxes.forEach(cb => {
+                cb.checked = isChecked;
+            });
+        }
+
+        window.deleteSelectedMedicines = function () {
+            const checkedBoxes = document.querySelectorAll('.med-checkbox:checked');
+
+            if (checkedBoxes.length === 0) {
+                alert("กรุณาเลือกรายการยาที่ต้องการลบอย่างน้อย 1 รายการ");
+                return;
+            }
+
+            if (confirm(`⚠️ ยืนยันการลบยา ${checkedBoxes.length} รายการที่เลือก? \n(ไม่สามารถกู้คืนได้)`)) {
+                checkedBoxes.forEach(cb => {
+                    const keyToDelete = cb.value;
+                    remove(ref(db, 'drugs/' + keyToDelete))
+                        .catch(err => console.error("Error deleting " + keyToDelete, err));
+                });
+
+                document.getElementById('selectAllCheckbox').checked = false;
+            }
+        }
+
         // --- Slot Logic ---
         function loadSlotsFromFirebase() {
-            const slotsRef = ref(db, "slots");
-            onValue(slotsRef, (snapshot) => {
+            onValue(ref(db, "slots"), (snapshot) => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
-                    if (Array.isArray(data)) {
-                        globalSlots = data.filter(x => x !== null);
-                    } else {
-                        globalSlots = Object.values(data);
-                    }
+                    globalSlots = Array.isArray(data) ? data.filter(x => x !== null) : Object.values(data);
                 } else {
                     globalSlots = [];
                 }
-                if (!globalSlots) globalSlots = [];
                 renderSlots();
             });
         }
@@ -590,134 +697,88 @@
         function renderSlots() {
             const container = document.getElementById("slotContainer");
             container.innerHTML = "";
-
             globalSlots.forEach((s, index) => {
                 const filled = s.name !== "Empty Slot";
                 const displayNum = String(index + 1).padStart(2, '0');
-                s.slot = index + 1;
-
-                // เวลาที่แก้ไข
-                const createdTime = s.createdAt ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i>${s.createdAt}</div>` : '';
-                
-                // ✅ แสดงชื่อคนแก้ไข (Edited By)
+                const createdTime = s.createdAt ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${s.createdAt}</div>` : '';
                 const editorInfo = s.editedBy ? `<div class="user-edit-badge" title="Last edited by ${s.editedBy}"><i class="fas fa-user-edit me-1"></i> ${s.editedBy}</div>` : '';
+
+                let detailHtml = `<div class="med-detail">${s.detail}</div>`;
 
                 const cardHTML = `
                     <div class="col-md-6">
-                        <div class="medicine-card" id="card-${index}" 
-                            style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}" >
-                            
-                            <div class="btn-fab-delete" onclick="deleteSpecificSlot(${index})" title="ลบ Slot นี้">
-                                <i class="fas fa-trash"></i>
-                            </div>
-
-                            <div class="slot-badge-label" style="${filled ? "" : "background:#95a5a6;"}">
-                                SLOT ${displayNum}
-                            </div>
-
+                        <div class="medicine-card" id="card-${index}" style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}">
+                            <div class="btn-fab-delete" onclick="deleteSpecificSlot(${index})" title="ลบ Slot นี้"><i class="fas fa-trash"></i></div>
+                            <div class="slot-badge-label" style="${filled ? "" : "background:#95a5a6;"}">SLOT ${displayNum}</div>
                             <div class="slot-indicator">${displayNum}</div>
-
                             <div class="card-content">
-                                <div class="med-name" style="${filled ? "" : "color:#95a5a6;font-style:italic;"}">
-                                    ${s.name}
-                                </div>
-                                <div class="med-detail">
-                                    ${s.detail}
-                                </div>
-                                
-                                ${createdTime}
-                                ${editorInfo}
+                                <div class="med-name" style="${filled ? "" : "color:#95a5a6;font-style:italic;"}">${s.name}</div>
+                                ${detailHtml}
+                                ${createdTime} ${editorInfo}
                             </div>
-
                             <button class="btn-fab ${filled ? "" : "btn-fab-add"}" onclick="editMedicine(${index})">
                                 <i class="fas ${filled ? "fa-pen" : "fa-plus"}"></i>
                             </button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 container.insertAdjacentHTML('beforeend', cardHTML);
             });
         }
 
         window.saveToFirebase = function () {
-            if (Array.isArray(globalSlots)) {
-                globalSlots.forEach((item, index) => {
-                    if (item) { 
-                        item.slot = index + 1;
-                    }
-                });
-            }
-
-            set(ref(db, "slots"), globalSlots)
-                .then(() => {
-                    console.log("✅ Data synced successfully");
-                })
-                .catch((error) => {
-                    alert("บันทึกไม่สำเร็จ: " + error.message);
-                });
+            globalSlots.forEach((item, index) => { if (item) item.slot = index + 1; });
+            set(ref(db, "slots"), globalSlots).catch((error) => { alert("บันทึกไม่สำเร็จ"); });
         }
 
-        // --- Button Actions ---
         window.addSlot = function () {
-            if (!Array.isArray(globalSlots)) globalSlots = [];
-            const nextNum = globalSlots.length + 1;
-
-            const now = new Date();
-            const dateTimeString = now.toLocaleString('en-GB', {
-                day: 'numeric', month: 'short', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', hour12: false
-            });
-
-            globalSlots.push({
-                slot: nextNum,
-                name: "Empty Slot",
-                detail: "Available for new item",
-                createdAt: dateTimeString,
-                editedBy: currentUserName // ✅ บันทึกชื่อคนเพิ่ม Slot
-            });
+            const now = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+            globalSlots.push({ slot: globalSlots.length + 1, name: "Empty Slot", detail: "Available for new item", createdAt: now, editedBy: currentUserName });
             saveToFirebase();
         };
 
-        window.removeLastSlot = function () {
-            if (globalSlots && globalSlots.length > 0) {
-                globalSlots.pop();
-                saveToFirebase();
-            }
-        };
-
-        window.deleteSpecificSlot = function (index) {
-            if (confirm("ต้องการลบ Slot นี้ใช่หรือไม่?")) {
-                globalSlots.splice(index, 1);
-                saveToFirebase();
-            }
-        };
-
-        window.editMedicine = function (index) {
-            currentSlotIndex = index;
-            new bootstrap.Modal(document.getElementById('selectMedModal')).show();
-        };
+        window.removeLastSlot = function () { if (globalSlots.length > 0) { globalSlots.pop(); saveToFirebase(); } };
+        window.deleteSpecificSlot = function (index) { if (confirm("ต้องการลบ Slot นี้?")) { globalSlots.splice(index, 1); saveToFirebase(); } };
+        window.editMedicine = function (index) { currentSlotIndex = index; new bootstrap.Modal(document.getElementById('selectMedModal')).show(); };
 
         window.applySelectedMed = function () {
-            const name = document.getElementById("medList").value;
+            const selectedName = document.getElementById("medList").value;
+            const drugInfo = medDataMap[selectedName];
+
             if (globalSlots[currentSlotIndex]) {
-                globalSlots[currentSlotIndex].name = name;
-                globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
+                globalSlots[currentSlotIndex].name = selectedName;
 
-                const now = new Date();
-                globalSlots[currentSlotIndex].createdAt = now.toLocaleString('en-GB', {
-                    day: 'numeric', month: 'short', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', hour12: false
-                });
+                if (drugInfo) {
+                    const generic = drugInfo.genericName || '-'; 
+                    const form = drugInfo.dosageForm || '-';
+                    const strength = drugInfo.strength || '-';
 
-                // ✅ บันทึกชื่อคนแก้ไขล่าสุด
+                    globalSlots[currentSlotIndex].detail = `
+                        <div class="med-detail-list">
+                            <div class="med-detail-row">
+                                <span class="med-detail-label">ชื่อสามัญ:</span>
+                                <span class="med-detail-value" style="font-style:italic;">${generic}</span>
+                            </div>
+                            <div class="med-detail-row">
+                                <span class="med-detail-label">รูปแบบ:</span>
+                                <span class="med-detail-value">${form}</span>
+                            </div>
+                            <div class="med-detail-row">
+                                <span class="med-detail-label">ความแรง:</span>
+                                <span class="med-detail-value">${strength}</span>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
+                }
+
+                globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
                 globalSlots[currentSlotIndex].editedBy = currentUserName;
-
                 saveToFirebase();
             }
             bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
         };
-
     </script>
-
 </body>
+
 </html>
