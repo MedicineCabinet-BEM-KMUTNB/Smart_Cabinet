@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="th">
 
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Cabinet - Dashboard</title>
 
-
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
 
-
   <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 
   <style>
       /* ================= CSS Styles ================= */
@@ -30,7 +26,6 @@
           --accent-blue: #74b9ff;
       }
 
-
       body {
           font-family: 'Kanit', sans-serif;
           background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #f6d365);
@@ -44,13 +39,11 @@
           padding: 20px;
       }
 
-
       @keyframes gradientBG {
           0% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
           100% { background-position: 0% 50%; }
       }
-
 
       body::before {
           content: "";
@@ -64,7 +57,6 @@
           z-index: -1;
       }
 
-
       .header-title {
           font-family: 'Cormorant Garamond', serif;
           font-weight: 600;
@@ -72,7 +64,6 @@
           color: #2c3e50;
           text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
       }
-
 
       .top-bar {
           display: flex;
@@ -82,7 +73,6 @@
           margin-top: 10px;
           flex-wrap: wrap;
       }
-
 
       .creator-badge, .collab-badge {
           font-family: 'Outfit', sans-serif;
@@ -99,13 +89,11 @@
           backdrop-filter: blur(5px);
       }
 
-
       .collab-badge span {
           color: var(--phyathai-light-green);
           font-weight: 700;
           margin-left: 6px;
       }
-
 
       .medicine-card {
           background: var(--card-bg);
@@ -121,7 +109,6 @@
           justify-content: center;
       }
 
-
       .medicine-card:hover {
           transform: translateY(-4px);
           background: #fff;
@@ -129,7 +116,6 @@
           border-color: #fff;
           transition: 0.3s;
       }
-
 
       .slot-indicator {
           font-family: 'Cormorant Garamond', serif;
@@ -144,7 +130,6 @@
           z-index: 0;
           pointer-events: none;
       }
-
 
       .slot-badge-label {
           position: absolute;
@@ -162,7 +147,6 @@
           z-index: 2;
       }
 
-
       .card-content {
           z-index: 1;
           padding-left: 5px;
@@ -172,7 +156,6 @@
           width: 100%;
       }
 
-
       .med-name {
           font-family: 'Kanit', sans-serif;
           font-weight: 500;
@@ -181,13 +164,11 @@
           margin-bottom: 4px;
       }
 
-
       .med-detail {
           font-family: 'Outfit', sans-serif;
           font-size: 0.9rem;
           color: #7f8c8d;
       }
-
 
       .med-detail-list {
           background: rgba(240, 242, 245, 0.6);
@@ -201,13 +182,11 @@
           min-width: 85%;
       }
 
-
       .med-detail-row {
           margin-bottom: 3px;
           display: flex;
           justify-content: space-between;
       }
-
 
       .med-detail-label {
           font-weight: 600;
@@ -216,13 +195,11 @@
           white-space: nowrap;
       }
 
-
       .med-detail-value {
           color: #2d3436;
           text-align: right;
           word-break: break-word;
       }
-
 
       .btn-fab {
           width: 50px;
@@ -242,26 +219,22 @@
           right: 20px;
       }
 
-
       .btn-fab:hover {
           background: var(--accent-orange);
           color: #fff;
           box-shadow: 0 5px 15px rgba(255, 159, 67, 0.6);
       }
 
-
       .btn-fab-add {
           background: #e8f5e9;
           color: var(--accent-green);
       }
-
 
       .btn-fab-add:hover {
           background: var(--accent-green);
           color: #fff;
           box-shadow: 0 5px 15px rgba(46, 204, 113, 0.5);
       }
-
 
       .btn-fab-delete {
           width: 32px;
@@ -282,13 +255,11 @@
           right: 15px;
       }
 
-
       .btn-fab-delete:hover {
           background: #e17055;
           color: white;
           border-color: #e17055;
       }
-
 
       .footer-credit {
           margin-top: 40px;
@@ -298,7 +269,6 @@
           text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
           opacity: 0.8;
       }
-
 
       .glam-modal {
           position: relative;
@@ -310,14 +280,12 @@
           box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
       }
 
-
       .glam-modal-title {
           font-family: 'Cormorant Garamond', serif;
           font-size: 1.4rem;
           font-style: italic;
           color: #2d3436;
       }
-
 
       .glam-select {
           border-radius: 18px;
@@ -335,7 +303,6 @@
           cursor: pointer;
       }
 
-
       .btn-manage-list {
           border-radius: 999px;
           border: 1px solid rgba(255, 255, 255, 0.85);
@@ -348,20 +315,17 @@
           transition: all 0.2s;
       }
 
-
       .btn-add-med {
           background: rgba(46, 204, 113, 0.15);
           color: #27ae60;
           border: 1px solid rgba(46, 204, 113, 0.3);
       }
 
-
       .btn-add-med:hover {
           background: #27ae60;
           color: white;
           box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
       }
-
 
       .btn-glam-primary {
           border-radius: 999px;
@@ -374,7 +338,6 @@
           box-shadow: 0 8px 20px rgba(244, 127, 89, 0.55);
       }
 
-
       .btn-glam-secondary {
           border-radius: 999px;
           padding-inline: 22px;
@@ -383,7 +346,6 @@
           border: 1px solid rgba(255, 255, 255, 0.8);
           background: rgba(255, 255, 255, 0.6);
       }
-
 
       .btn-glam-danger {
           border-radius: 999px;
@@ -396,12 +358,10 @@
           box-shadow: 0 5px 15px rgba(255, 118, 117, 0.4);
       }
 
-
       .btn-glam-danger:hover {
           background: #d63031;
           color: white;
       }
-
 
       .btn-logout {
           background: rgba(231, 76, 60, 0.15);
@@ -410,12 +370,10 @@
           transition: all 0.2s;
       }
 
-
       .btn-logout:hover {
           background: #c0392b;
           color: white;
       }
-
 
       .user-edit-badge {
           background: rgba(116, 185, 255, 0.15);
@@ -432,7 +390,6 @@
           white-space: nowrap;
       }
 
-
       /* ================= CSS สำหรับการสั่งปริ้นแบบ A4 (Layout 6 ยาต่อหน้า) ================= */
       @media print {
           body * { visibility: hidden; }
@@ -443,9 +400,7 @@
               position: absolute; left: 0; top: 0; width: 100%; margin: 0; padding: 0; background: white;
           }
 
-
           .btn-close, .modal-footer { display: none !important; }
-
 
           .a4-page {
               width: 210mm;
@@ -472,7 +427,6 @@
               font-family: 'Kanit', sans-serif;
           }
 
-
           .print-header-row {
               display: flex;
               justify-content: space-between;
@@ -480,7 +434,6 @@
               width: 100%;
               margin-bottom: 5px;
           }
-
 
           .print-info-left {
               font-size: 0.8rem;
@@ -494,10 +447,8 @@
               font-size: 0.95rem;
           }
 
-
           .qrcode-container { margin: 0; }
           .qrcode-container img { display: block; }
-
 
           .print-med-box {
               border: 2px solid #333;
@@ -512,13 +463,13 @@
               align-items: center;
               justify-content: center;
           }
+          
           .print-med-name {
               font-weight: bold;
               font-size: 1.25rem;
               margin: 0;
               word-break: break-word;
           }
-
 
           .print-barcode-container {
               text-align: center;
@@ -529,11 +480,9 @@
   </style>
 </head>
 
-
 <body>
   <div class="text-center mb-3 mt-4">
       <h1 class="header-title display-3">Medicine Cabinet</h1>
-
 
       <div class="top-bar">
           <div class="creator-badge">
@@ -541,39 +490,32 @@
               <span style="color:#d35400; font-weight:700; margin-left:6px;">BME KMUTNB</span>
           </div>
 
-
           <div class="collab-badge">
               Collaborated with
               <span>Phyathai 3 Hospital</span>
           </div>
 
-
           <button class="btn btn-sm btn-manage-list btn-add-med" onclick="goToAddMedicine()">
               <i class="fas fa-plus-square me-1"></i> เพิ่มข้อมูลยาใหม่
           </button>
 
-
           <button class="btn btn-sm btn-manage-list" onclick="openManageMedList()">
               <i class="fas fa-list-ul me-1"></i> รายชื่อยา
           </button>
-
 
           <button class="btn btn-sm btn-manage-list btn-logout ms-2" onclick="logout()">
               <i class="fas fa-sign-out-alt me-1"></i> ออกจากระบบ
           </button>
       </div>
 
-
       <div id="currentUserDisplay" class="mt-2 text-muted" style="font-family:'Outfit'; font-size:0.9rem;">
           กำลังโหลดข้อมูลผู้ใช้...
       </div>
   </div>
 
-
   <div class="container" style="max-width: 900px;">
       <div class="row g-4" id="slotContainer">
       </div>
-
 
       <div class="d-flex justify-content-center gap-4 mt-5">
           <button class="btn btn-glam-primary rounded-pill px-4" onclick="addSlot()">
@@ -582,9 +524,7 @@
       </div>
   </div>
 
-
   <div class="footer-credit text-center">Biomedical Engineering Project</div>
-
 
   <div class="modal fade" id="selectMedModal" tabindex="-1">
       <div class="modal-dialog">
@@ -604,7 +544,6 @@
       </div>
   </div>
 
-
   <div class="modal fade" id="manageMedModal" tabindex="-1">
       <div class="modal-dialog modal-lg">
           <div class="modal-content glam-modal">
@@ -622,7 +561,6 @@
                       </button>
                   </div>
 
-
                   <div style="max-height: 450px; overflow-y: auto;">
                       <ul id="medListManager" class="list-group" style="background:none;">
                           <li class="list-group-item text-center text-muted">รอการสแกน...</li>
@@ -639,18 +577,14 @@
       </div>
   </div>
 
-
   <div id="printA4Container" style="display: none;"></div>
 
-
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 
   <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
       import { getDatabase, ref, set, get, child, onValue, push, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
       import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
 
       const firebaseConfig = {
           apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
@@ -663,24 +597,19 @@
           measurementId: "G-RGG20ZR8J0"
       };
 
-
       const app = initializeApp(firebaseConfig);
       const db = getDatabase(app);
       const auth = getAuth(app);
-
 
       let globalSlots = [];
       let currentSlotIndex = null;
       let currentUserName = "Loading...";
 
-
       let medDataMap = {};
-
 
       window.goToAddMedicine = function () {
           window.location.href = "add_medicine.html";
       };
-
 
       // --- Authentication & User Info ---
       onAuthStateChanged(auth, (user) => {
@@ -710,11 +639,9 @@
           }
       });
 
-
       window.logout = function () {
           signOut(auth).then(() => { window.location.href = "index.html"; }).catch((error) => { alert("Logout Failed"); });
       };
-
 
       // --- Medicine List Logic ---
       const medListRef = ref(db, 'drugs');
@@ -723,14 +650,11 @@
               const select = document.getElementById("medList");
               const ul = document.getElementById("medListManager");
 
-
               select.innerHTML = "";
               ul.innerHTML = "";
               medDataMap = {};
 
-
               let hasData = false;
-
 
               if (snapshot.exists()) {
                   hasData = true;
@@ -739,14 +663,11 @@
                       const drugItem = data[key];
                       const drugName = drugItem.name ? drugItem.name : key;
 
-
                       if (!drugItem.hospitalCode) {
                           drugItem.hospitalCode = key;
                       }
 
-
                       medDataMap[drugName] = drugItem;
-
 
                       // ===== จุดที่แก้ไข: กำหนดให้แสดงแค่ชื่อยาใน Dropdown =====
                       const opt = document.createElement("option");
@@ -759,7 +680,6 @@
                       select.appendChild(opt);
                       // =======================================================
 
-
                       const generic = drugItem.genericName || '-';
                       const form = drugItem.dosageForm || '-';
                       const strength = drugItem.strength || '-';
@@ -768,7 +688,6 @@
                       li.className = "list-group-item d-flex justify-content-between align-items-center mb-2";
                       li.style.background = "rgba(255,255,255,0.7)";
                       li.style.border = "none";
-
 
                       li.innerHTML = `
                       <div class="d-flex align-items-start" style="width: 100%;">
@@ -791,20 +710,17 @@
           });
       }
 
-
       window.deleteMedicine = function (key) {
           if (confirm("ต้องการลบยาออกหรือไม่?")) {
               remove(ref(db, 'drugs/' + key)).catch((error) => { alert("ลบไม่สำเร็จ"); });
           }
       };
 
-
       window.openManageMedList = function () {
           const selectAll = document.getElementById('selectAllCheckbox');
           if (selectAll) selectAll.checked = false;
           new bootstrap.Modal(document.getElementById('manageMedModal')).show();
       };
-
 
       window.toggleSelectAll = function () {
           const isChecked = document.getElementById('selectAllCheckbox').checked;
@@ -813,7 +729,6 @@
               cb.checked = isChecked;
           });
       }
-
 
       window.deleteSelectedMedicines = function () {
           const checkedBoxes = document.querySelectorAll('.med-checkbox:checked');
@@ -831,7 +746,6 @@
           }
       }
 
-
       // --- Slot Logic ---
       function loadSlotsFromFirebase() {
           onValue(ref(db, "slots"), (snapshot) => {
@@ -845,7 +759,6 @@
           });
       }
 
-
       function renderSlots() {
           const container = document.getElementById("slotContainer");
           container.innerHTML = "";
@@ -855,10 +768,8 @@
               const createdTime = s.createdAt ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${s.createdAt}</div>` : '';
               const editorInfo = s.editedBy ? `<div class="user-edit-badge" title="Last edited by ${s.editedBy}"><i class="fas fa-user-edit me-1"></i> ${s.editedBy}</div>` : '';
 
-
               let detailHtml = `<div class="med-detail">${s.detail}</div>`;
               let cleanSlotName = s.name.split(' [รหัส:')[0];
-
 
               const cardHTML = `
                   <div class="col-md-6">
@@ -880,12 +791,10 @@
           });
       }
 
-
       window.saveToFirebase = function () {
           globalSlots.forEach((item, index) => { if (item) item.slot = index + 1; });
           set(ref(db, "slots"), globalSlots).catch((error) => { alert("บันทึกไม่สำเร็จ"); });
       }
-
 
       window.addSlot = function () {
           const now = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -893,30 +802,24 @@
           saveToFirebase();
       };
 
-
       window.removeLastSlot = function () { if (globalSlots.length > 0) { globalSlots.pop(); saveToFirebase(); } };
       window.deleteSpecificSlot = function (index) { if (confirm("ต้องการลบ Slot นี้?")) { globalSlots.splice(index, 1); saveToFirebase(); } };
       window.editMedicine = function (index) { currentSlotIndex = index; new bootstrap.Modal(document.getElementById('selectMedModal')).show(); };
-
 
       window.applySelectedMed = function () {
           const selectedName = document.getElementById("medList").value;
           const drugInfo = medDataMap[selectedName];
 
-
           if (globalSlots[currentSlotIndex]) {
               globalSlots[currentSlotIndex].name = selectedName;
-
 
               if (drugInfo) {
                   const generic = drugInfo.genericName || '-';
                   const form = drugInfo.dosageForm || '-';
                   const strength = drugInfo.strength || '-';
 
-
                   globalSlots[currentSlotIndex].hospitalCode = drugInfo.hospitalCode || drugInfo.code || '';
                   globalSlots[currentSlotIndex].tradeName = drugInfo.tradeName || selectedName;
-
 
                   globalSlots[currentSlotIndex].detail = `
                       <div class="med-detail-list">
@@ -940,14 +843,12 @@
                   globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
               }
 
-
               globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
               globalSlots[currentSlotIndex].editedBy = currentUserName;
               saveToFirebase();
           }
           bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
       };
-
 
       // ================= ฟังก์ชันปริ้นรวม A4 (Batch Print) =================
       window.prepareA4Print = function() {
@@ -958,19 +859,15 @@
               return;
           }
 
-
           const printContainer = document.getElementById('printA4Container');
           printContainer.innerHTML = '';
           printContainer.style.display = "block";
-
 
           let currentPage = document.createElement('div');
           currentPage.className = 'a4-page';
           printContainer.appendChild(currentPage);
 
-
           let itemCount = 0;
-
 
           checkedBoxes.forEach((cb, index) => {
               const fullDrugName = cb.closest('li').querySelector('.text-primary').innerText;
@@ -978,20 +875,17 @@
               const drugInfo = medDataMap[fullDrugName];
               const hCode = (drugInfo && drugInfo.hospitalCode) ? drugInfo.hospitalCode : 'NO-CODE';
 
-
               if (itemCount > 0 && itemCount % 6 === 0) {
                   currentPage = document.createElement('div');
                   currentPage.className = 'a4-page';
                   printContainer.appendChild(currentPage);
               }
 
-
               const cell = document.createElement('div');
               cell.className = 'print-cell';
              
               const idBarcode = `barcode-a4-${index}`;
               const idQrcode = `qrcode-a4-${index}`;
-
 
               cell.innerHTML = `
                   <div class="print-header-row">
@@ -1003,11 +897,9 @@
                       <div class="print-code-container qrcode-container" id="${idQrcode}"></div>
                   </div>
 
-
                   <div class="print-med-box">
                       <div class="print-med-name">${drugName}</div>
                   </div>
-
 
                   <div class="print-barcode-container">
                       <svg id="${idBarcode}"></svg>
@@ -1015,7 +907,6 @@
               `;
              
               currentPage.appendChild(cell);
-
 
               if (hCode !== 'NO-CODE') {
                   setTimeout(() => {
@@ -1033,10 +924,8 @@
                   }, 50);
               }
 
-
               itemCount++;
           });
-
 
           document.body.classList.add('printing-a4');
          
@@ -1049,8 +938,6 @@
           }, 500);
       }
 
-
   </script>
 </body>
 </html>
-
