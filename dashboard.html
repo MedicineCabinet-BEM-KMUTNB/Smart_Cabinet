@@ -445,7 +445,7 @@
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-                padding: 6mm;
+                padding: 5mm;
                 box-sizing: border-box;
                 max-height: 90mm;
                 overflow: hidden;
@@ -506,6 +506,16 @@
                 text-align: center;
                 width: 100%;
                 margin-top: 8px;
+                padding: 0 4mm;
+                box-sizing: border-box;
+                overflow: hidden;
+            }
+
+            .print-barcode-container svg {
+                max-width: 100%;
+                height: auto;
+                display: block;
+                margin: 0 auto;
             }
         }
 
@@ -631,7 +641,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child, onValue, push, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+        import { getDatabase, ref, set, get, onValue, remove } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
         import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
         const firebaseConfig = {
@@ -652,14 +662,39 @@
         let globalSlots = [];
         let currentSlotIndex = null;
         let currentUserName = "Loading...";
-
         let medDataMap = {};
 
         window.goToAddMedicine = function () {
             window.location.href = "add_medicine.html";
         };
 
-        // --- Authentication & User Info ---
+        function getBarcodeOptions(code) {
+            const len = (code || "").length;
+
+            let width = 1.8 - ((len - 8) * 0.05);
+            if (width > 1.8) width = 1.8;
+            if (width < 0.75) width = 0.75;
+
+            let fontSize = 13;
+            if (len > 18) fontSize = 11;
+            if (len > 26) fontSize = 10;
+            if (len > 34) fontSize = 9;
+
+            let height = 45;
+            if (len > 26) height = 40;
+            if (len > 34) height = 36;
+
+            return {
+                format: "CODE128",
+                width: width,
+                height: height,
+                displayValue: true,
+                fontSize: fontSize,
+                margin: 4,
+                textMargin: 3
+            };
+        }
+
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 const userRef = ref(db, 'users/' + user.uid);
@@ -677,7 +712,7 @@
                         `<span style="font-family: 'Kanit', sans-serif;"><i class="fas fa-user-circle me-1"></i> ผู้ใช้งาน: <strong>${currentUserName}</strong></span>`;
                     loadSlotsFromFirebase();
                     loadMedListFromFirebase();
-                }).catch((error) => {
+                }).catch(() => {
                     currentUserName = user.email || "Unknown User";
                     loadSlotsFromFirebase();
                     loadMedListFromFirebase();
@@ -688,10 +723,9 @@
         });
 
         window.logout = function () {
-            signOut(auth).then(() => { window.location.href = "index.html"; }).catch((error) => { alert("Logout Failed"); });
+            signOut(auth).then(() => { window.location.href = "index.html"; }).catch(() => { alert("Logout Failed"); });
         };
 
-        // --- Medicine List Logic ---
         const medListRef = ref(db, 'drugs');
         function loadMedListFromFirebase() {
             onValue(medListRef, (snapshot) => {
@@ -717,16 +751,11 @@
 
                         medDataMap[drugName] = drugItem;
 
-                        // ===== จุดที่แก้ไข: กำหนดให้แสดงแค่ชื่อยาใน Dropdown =====
                         const opt = document.createElement("option");
                         opt.value = drugName;
-
-                        // ถ้าในฐานข้อมูลมีวงเล็บติดมากับชื่อยาด้วย เราจะตัดออกให้เหลือแค่ชื่อ (เช่น CYTOTEC)
                         let cleanName = drugName.split(' [รหัส:')[0];
                         opt.textContent = cleanName;
-
                         select.appendChild(opt);
-                        // =======================================================
 
                         const generic = drugItem.genericName || '-';
                         const form = drugItem.dosageForm || '-';
@@ -742,7 +771,8 @@
                           <input type="checkbox" class="med-checkbox form-check-input mt-1 me-3" value="${key}">
                           <div class="flex-grow-1">
                               <div class="fw-bold text-primary mb-0">${cleanName}</div>
-                              <div class="text-secondary small fst-italic mb-1">${generic}</div> <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
+                              <div class="text-secondary small fst-italic mb-1">${generic}</div>
+                              <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
                                   <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
                                   <span class="d-inline-block me-2 border rounded px-1 bg-light">ขนาด: ${strength}</span>
                               </div>
@@ -760,7 +790,7 @@
 
         window.deleteMedicine = function (key) {
             if (confirm("ต้องการลบยาออกหรือไม่?")) {
-                remove(ref(db, 'drugs/' + key)).catch((error) => { alert("ลบไม่สำเร็จ"); });
+                remove(ref(db, 'drugs/' + key)).catch(() => { alert("ลบไม่สำเร็จ"); });
             }
         };
 
@@ -794,7 +824,6 @@
             }
         }
 
-        // --- Slot Logic ---
         function loadSlotsFromFirebase() {
             onValue(ref(db, "slots"), (snapshot) => {
                 if (snapshot.exists()) {
@@ -841,18 +870,43 @@
 
         window.saveToFirebase = function () {
             globalSlots.forEach((item, index) => { if (item) item.slot = index + 1; });
-            set(ref(db, "slots"), globalSlots).catch((error) => { alert("บันทึกไม่สำเร็จ"); });
+            set(ref(db, "slots"), globalSlots).catch(() => { alert("บันทึกไม่สำเร็จ"); });
         }
 
         window.addSlot = function () {
-            const now = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
-            globalSlots.push({ slot: globalSlots.length + 1, name: "Empty Slot", detail: "Available for new item", createdAt: now, editedBy: currentUserName, hospitalCode: "" });
+            const now = new Date().toLocaleString('en-GB', {
+                day: 'numeric', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit', hour12: false
+            });
+            globalSlots.push({
+                slot: globalSlots.length + 1,
+                name: "Empty Slot",
+                detail: "Available for new item",
+                createdAt: now,
+                editedBy: currentUserName,
+                hospitalCode: ""
+            });
             saveToFirebase();
         };
 
-        window.removeLastSlot = function () { if (globalSlots.length > 0) { globalSlots.pop(); saveToFirebase(); } };
-        window.deleteSpecificSlot = function (index) { if (confirm("ต้องการลบ Slot นี้?")) { globalSlots.splice(index, 1); saveToFirebase(); } };
-        window.editMedicine = function (index) { currentSlotIndex = index; new bootstrap.Modal(document.getElementById('selectMedModal')).show(); };
+        window.removeLastSlot = function () {
+            if (globalSlots.length > 0) {
+                globalSlots.pop();
+                saveToFirebase();
+            }
+        };
+
+        window.deleteSpecificSlot = function (index) {
+            if (confirm("ต้องการลบ Slot นี้?")) {
+                globalSlots.splice(index, 1);
+                saveToFirebase();
+            }
+        };
+
+        window.editMedicine = function (index) {
+            currentSlotIndex = index;
+            new bootstrap.Modal(document.getElementById('selectMedModal')).show();
+        };
 
         window.applySelectedMed = function () {
             const selectedName = document.getElementById("medList").value;
@@ -891,14 +945,16 @@
                     globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
                 }
 
-                globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+                globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', {
+                    day: 'numeric', month: 'short', year: 'numeric',
+                    hour: '2-digit', minute: '2-digit', hour12: false
+                });
                 globalSlots[currentSlotIndex].editedBy = currentUserName;
                 saveToFirebase();
             }
             bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
         };
 
-        // ================= ฟังก์ชันปริ้นรวม A4 (Batch Print) =================
         window.prepareA4Print = function () {
             const checkedBoxes = document.querySelectorAll('.med-checkbox:checked');
 
@@ -919,7 +975,7 @@
 
             checkedBoxes.forEach((cb, index) => {
                 const fullDrugName = cb.closest('li').querySelector('.text-primary').innerText;
-                const drugName = fullDrugName.split(' [รหัส:')[0]; // ทำความสะอาดชื่อยาก่อนพิมพ์
+                const drugName = fullDrugName.split(' [รหัส:')[0];
                 const drugInfo = medDataMap[fullDrugName];
                 const hCode = (drugInfo && drugInfo.hospitalCode) ? drugInfo.hospitalCode : 'NO-CODE';
 
@@ -958,11 +1014,16 @@
 
                 if (hCode !== 'NO-CODE') {
                     setTimeout(() => {
-                        JsBarcode(`#${idBarcode}`, hCode, {
-                            format: "CODE128", width: 1.8, height: 45, displayValue: true, fontSize: 13
-                        });
+                        const barcodeOptions = getBarcodeOptions(hCode);
+
+                        JsBarcode(`#${idBarcode}`, hCode, barcodeOptions);
+
                         new QRCode(document.getElementById(idQrcode), {
-                            text: hCode, width: 75, height: 75, colorDark: "#000000", colorLight: "#ffffff"
+                            text: hCode,
+                            width: 75,
+                            height: 75,
+                            colorDark: "#000000",
+                            colorLight: "#ffffff"
                         });
                     }, 50);
                 } else {
@@ -984,8 +1045,7 @@
                     printContainer.style.display = "none";
                 }, 1000);
             }, 500);
-        }
-
+        };
     </script>
 </body>
 
