@@ -2,330 +2,317 @@
 <html lang="th">
 
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Register • Smart Cabinet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register • Smart Cabinet</title>
 
-   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-   <style>
-       :root {
-           --accent-dark: #2f3640;
-           --phyathai-dark-green: #2f6f5e;
-           --phyathai-light-green: #8bcfae;
-           --error-red: #e74c3c;
-           --success-green: #2ecc71;
-       }
+    <style>
+        :root {
+            --accent-dark: #2f3640;
+            --phyathai-dark-green: #2f6f5e;
+            --phyathai-light-green: #8bcfae;
+            --error-red: #e74c3c;
+            --success-green: #2ecc71;
+        }
 
-       * {
-           font-family: 'Kanit', sans-serif;
-       }
+        * {
+            font-family: 'Kanit', sans-serif;
+        }
 
-       body {
-           margin: 0;
-           background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #f6d365);
-           background-size: 400% 400%;
-           animation: gradientBG 15s ease infinite;
-           min-height: 100vh;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           padding: 30px 20px;
-       }
+        body {
+            margin: 0;
+            background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #f6d365);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
 
-       @keyframes gradientBG {
-           0% { background-position: 0% 50%; }
-           50% { background-position: 100% 50%; }
-           100% { background-position: 0% 50%; }
-       }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
-       .header-title {
-           font-family: 'Cormorant Garamond', serif;
-           font-size: 3rem;
-           font-weight: 600;
-           font-style: italic;
-           margin-bottom: 8px;
-           color: #2c3e50;
-       }
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 600;
+            font-style: italic;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
 
-       .creator-badge,
-       .co-badge {
-           font-size: 0.85rem;
-           text-transform: uppercase;
-           background: rgba(255,255,255,0.45);
-           padding: 7px 22px;
-           border-radius: 999px;
-           margin-top: 10px;
-           backdrop-filter: blur(4px);
-           letter-spacing: 0.5px;
-       }
+        .creator-badge,
+        .co-badge {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            background: rgba(255,255,255,0.45);
+            padding: 7px 22px;
+            border-radius: 999px;
+            margin-top: 10px;
+            backdrop-filter: blur(4px);
+            letter-spacing: 0.5px;
+        }
 
-       .co-badge b {
-           color: var(--phyathai-dark-green);
-       }
+        .co-badge b {
+            color: var(--phyathai-dark-green);
+        }
 
-       .login-card {
-           margin-top: 35px;
-           width: 100%;
-           max-width: 380px;
-           padding: 32px 28px;
-           background: rgba(255,255,255,0.35);
-           border-radius: 26px;
-           backdrop-filter: blur(22px);
-           box-shadow: 0 18px 40px rgba(0,0,0,0.18);
-       }
+        .login-card {
+            margin-top: 35px;
+            width: 100%;
+            max-width: 380px;
+            padding: 32px 28px;
+            background: rgba(255,255,255,0.35);
+            border-radius: 26px;
+            backdrop-filter: blur(22px);
+            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+        }
 
-       .register-badge-label {
-           background: #6c5ce7;
-           color: #fff;
-           padding: 7px 20px;
-           border-radius: 0 0 18px 0;
-           font-size: 0.8rem;
-           width: fit-content;
-       }
+        .register-badge-label {
+            background: #6c5ce7;
+            color: #fff;
+            padding: 7px 20px;
+            border-radius: 0 0 18px 0;
+            font-size: 0.8rem;
+            width: fit-content;
+        }
 
-       .login-title {
-           text-align: center;
-           font-size: 2.2rem;
-           font-weight: 400;
-           margin-top: 20px;
-       }
+        .login-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 400;
+            margin-top: 20px;
+        }
 
-       .login-subtitle {
-           text-align: center;
-           color: #555;
-           margin-bottom: 25px;
-           font-weight: 300;
-       }
+        .login-subtitle {
+            text-align: center;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
 
-       .input-group {
-           margin-bottom: 15px;
-       }
+        .input-group {
+            margin-bottom: 15px;
+        }
 
-       label {
-           font-size: 0.9rem;
-           margin-left: 5px;
-           color: #444;
-       }
+        label {
+            font-size: 0.9rem;
+            margin-left: 5px;
+            color: #444;
+        }
 
-       input {
-           width: 100%;
-           box-sizing: border-box;
-           padding: 10px 15px;
-           border-radius: 12px;
-           border: 1px solid rgba(0,0,0,0.1);
-           background: rgba(255,255,255,0.8);
-           margin-top: 5px;
-       }
+        input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.8);
+            margin-top: 5px;
+        }
 
-       input:focus {
-           outline: none;
-           border-color: #6c5ce7;
-           box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
-       }
+        input:focus {
+            outline: none;
+            border-color: #6c5ce7;
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+        }
 
-       button {
-           width: 100%;
-           padding: 11px;
-           border: none;
-           border-radius: 999px;
-           background: var(--accent-dark);
-           color: #fff;
-           font-size: 1rem;
-           cursor: pointer;
-           margin-top: 15px;
-           transition: 0.2s;
-           font-weight: 500;
-       }
+        button {
+            width: 100%;
+            padding: 11px;
+            border: none;
+            border-radius: 999px;
+            background: var(--accent-dark);
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+            font-weight: 500;
+        }
 
-       button:hover {
-           transform: translateY(-2px);
-           box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-       }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
 
-       #msg {
-           display: none;
-           text-align: center;
-           font-size: 0.9rem;
-           margin-bottom: 15px;
-           background: rgba(255,255,255,0.8);
-           padding: 10px;
-           border-radius: 12px;
-           border: 1px solid rgba(0,0,0,0.05);
-       }
+        #msg {
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            background: rgba(255,255,255,0.8);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
 
-       .back-link {
-           text-align: center;
-           margin-top: 20px;
-           font-size: 0.9rem;
-       }
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
 
-       .back-link a {
-           color: var(--accent-dark);
-           text-decoration: none;
-           border-bottom: 1px dashed var(--accent-dark);
-       }
+        .back-link a {
+            color: var(--accent-dark);
+            text-decoration: none;
+            border-bottom: 1px dashed var(--accent-dark);
+        }
 
-       .footer-credit {
-           margin-top: 35px;
-           font-family: 'Cormorant Garamond', serif;
-           font-style: italic;
-           color: #fff;
-           opacity: 0.8;
-           letter-spacing: 1px;
-       }
-   </style>
+        .footer-credit {
+            margin-top: 35px;
+            font-family: 'Cormorant Garamond', serif;
+            font-style: italic;
+            color: #fff;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+    </style>
 </head>
 
 <body>
 
-   <h1 class="header-title">Medicine Cabinet</h1>
+    <h1 class="header-title">Medicine Cabinet</h1>
 
-   <div class="creator-badge">
-       Designed by <b style="color:#d35400;">BME KMUTNB</b>
-   </div>
+    <div class="creator-badge">
+        Designed by <b style="color:#d35400;">BME KMUTNB</b>
+    </div>
 
-   <div class="co-badge">
-       Collaborated with <b>Phyathai 3 Hospital</b>
-   </div>
+    <div class="co-badge">
+        Collaborated with <b>Phyathai 3 Hospital</b>
+    </div>
 
-   <div class="login-card">
-       <div class="register-badge-label">REGISTER</div>
+    <div class="login-card">
+        <div class="register-badge-label">REGISTER</div>
 
-       <div class="login-title">สมัครสมาชิก</div>
-       <div class="login-subtitle">สร้างบัญชีผู้ใช้งานใหม่</div>
+        <div class="login-title">สมัครสมาชิก</div>
+        <div class="login-subtitle">สร้างบัญชีผู้ใช้งานใหม่</div>
 
-       <div id="msg"></div>
+        <div id="msg"></div>
 
-       <div class="input-group">
-           <label><i class="fas fa-id-card me-1"></i> ชื่อ – นามสกุล</label>
-           <input type="text" id="fullname" placeholder="เช่น นพ.สมชาย ใจดี">
-       </div>
+        <div class="input-group">
+            <label><i class="fas fa-id-card me-1"></i> ชื่อ – นามสกุล</label>
+            <input type="text" id="fullname" placeholder="เช่น นพ.สมชาย ใจดี">
+        </div>
 
-       <div class="input-group">
-           <label><i class="fas fa-user me-1"></i> ชื่อผู้ใช้ (Username)</label>
-           <input type="text" id="username" placeholder="ภาษาอังกฤษ (เช่น pitchapa)">
-       </div>
+        <div class="input-group">
+            <label><i class="fas fa-user me-1"></i> ชื่อผู้ใช้ (Username)</label>
+            <input type="text" id="username" placeholder="ภาษาอังกฤษ (เช่น pitchapa)">
+        </div>
 
-       <div class="input-group">
-           <label><i class="fas fa-lock me-1"></i> รหัสผ่าน (Password)</label>
-           <input type="password" id="password" placeholder="อย่างน้อย 6 ตัวอักษร">
-       </div>
+        <div class="input-group">
+            <label><i class="fas fa-lock me-1"></i> รหัสผ่าน (Password)</label>
+            <input type="password" id="password" placeholder="อย่างน้อย 6 ตัวอักษร">
+        </div>
 
-       <button id="btnRegister">ยืนยันการสมัคร</button>
+        <button id="btnRegister">ยืนยันการสมัคร</button>
 
-       <div class="back-link">
-           <a href="index.html">กลับไปหน้าเข้าสู่ระบบ</a>
-       </div>
-   </div>
+        <div class="back-link">
+            <a href="index.html">กลับไปหน้าเข้าสู่ระบบ</a>
+        </div>
+    </div>
 
-   <div class="footer-credit">Biomedical Engineering Project</div>
+    <div class="footer-credit">Biomedical Engineering Project</div>
 
-   <script type="module">
-       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-       import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-       import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
-       const firebaseConfig = {
-           apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
-           authDomain: "slot-drug.firebaseapp.com",
-           databaseURL: "https://slot-drug-default-rtdb.asia-southeast1.firebasedatabase.app",
-           projectId: "slot-drug",
-           storageBucket: "slot-drug.firebasestorage.app",
-           messagingSenderId: "805318911272",
-           appId: "1:805318911272:web:d5c569063937d56eb01c1d"
-       };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
+            authDomain: "slot-drug.firebaseapp.com",
+            databaseURL: "https://slot-drug-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "slot-drug",
+            storageBucket: "slot-drug.firebasestorage.app",
+            messagingSenderId: "805318911272",
+            appId: "1:805318911272:web:d5c569063937d56eb01c1d"
+        };
 
-       const app = initializeApp(firebaseConfig);
-       const auth = getAuth(app);
-       const db = getDatabase(app);
-       const msg = document.getElementById("msg");
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getDatabase(app);
+        const msg = document.getElementById("msg");
 
-       document.getElementById("btnRegister").addEventListener("click", async () => {
-           const btn = document.getElementById("btnRegister");
-           const fullname = document.getElementById("fullname").value.trim();
-           let username = document.getElementById("username").value.trim().toLowerCase();
-           const password = document.getElementById("password").value;
+        document.getElementById("btnRegister").addEventListener("click", async () => {
+            const btn = document.getElementById("btnRegister");
+            const fullname = document.getElementById("fullname").value.trim();
+            let username = document.getElementById("username").value.trim().toLowerCase();
+            const password = document.getElementById("password").value;
 
-           msg.style.display = "none";
+            msg.style.display = "none";
 
-           if (!fullname || !username || !password) {
-               showMsg('<i class="fas fa-exclamation-circle"></i> กรุณากรอกข้อมูลให้ครบ', "#e74c3c");
-               return;
-           }
+            if (!fullname || !username || !password) {
+                showMsg('<i class="fas fa-exclamation-circle"></i> กรุณากรอกข้อมูลให้ครบ', "#e74c3c");
+                return;
+            }
 
-           if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
-               showMsg('<i class="fas fa-exclamation-circle"></i> Username ใช้ได้เฉพาะ a-z, A-Z, 0-9, จุด, ขีด, ขีดล่าง', "#e74c3c");
-               return;
-           }
+            if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+                showMsg('<i class="fas fa-exclamation-circle"></i> Username ใช้ได้เฉพาะ a-z, A-Z, 0-9, จุด, ขีด, ขีดล่าง', "#e74c3c");
+                return;
+            }
 
-           const usernameKey = username;
-           const email = username + "@smartcabinet.com";
+            const usernameKey = username;
+            const email = username + "@smartcabinet.com";
 
-           btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
-           btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
+            btn.disabled = true;
 
-           try {
-               const userRef = ref(db, "users/" + usernameKey);
-               const snapshot = await get(userRef);
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                const user = cred.user;
 
-               if (snapshot.exists()) {
-                   showMsg('<i class="fas fa-times-circle"></i> ชื่อผู้ใช้นี้ถูกใช้แล้ว', "#e74c3c");
-                   btn.innerHTML = "ยืนยันการสมัคร";
-                   btn.disabled = false;
-                   return;
-               }
+                await updateProfile(user, {
+                    displayName: fullname
+                });
 
-               const cred = await createUserWithEmailAndPassword(auth, email, password);
-               const user = cred.user;
+                await set(ref(db, "users/" + usernameKey), {
+                    name: fullname,
+                    email: email,
+                    role: "staff"
+                });
 
-               await updateProfile(user, {
-                   displayName: fullname
-               });
+                showMsg('<i class="fas fa-check-circle"></i> สมัครสมาชิกสำเร็จ!', "#2ecc71");
 
-               await set(ref(db, "users/" + usernameKey), {
-                  // uid: user.uid,
-                   name: fullname,
-                   email: email,
-                   role: "staff"
-               });
+                setTimeout(() => {
+                    window.location.href = "index.html";
+                }, 1500);
 
-               console.log("บันทึกข้อมูล users/" + usernameKey + " สำเร็จ");
+            } catch (error) {
+                console.error("Register error:", error);
 
-               showMsg('<i class="fas fa-check-circle"></i> สมัครสมาชิกสำเร็จ!', "#2ecc71");
+                let text = "เกิดข้อผิดพลาด";
+                if (error.code === "auth/email-already-in-use") {
+                    text = "ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+                } else if (error.code === "auth/weak-password") {
+                    text = "รหัสผ่านต้องอย่างน้อย 6 ตัว";
+                } else if (error.code === "PERMISSION_DENIED") {
+                    text = "ไม่มีสิทธิ์เขียนข้อมูลลงฐานข้อมูล";
+                } else {
+                    text = error.message;
+                }
 
-               setTimeout(() => {
-                   window.location.href = "index.html";
-               }, 1500);
+                showMsg('<i class="fas fa-times-circle"></i> ' + text, "#e74c3c");
+                btn.innerHTML = "ยืนยันการสมัคร";
+                btn.disabled = false;
+            }
+        });
 
-           } catch (error) {
-               console.error("Register error:", error);
-
-               let text = "เกิดข้อผิดพลาด";
-               if (error.code === "auth/email-already-in-use") {
-                   text = "ชื่อผู้ใช้นี้ถูกใช้แล้ว";
-               } else if (error.code === "auth/weak-password") {
-                   text = "รหัสผ่านต้องอย่างน้อย 6 ตัว";
-               } else if (error.code === "PERMISSION_DENIED") {
-                   text = "ไม่มีสิทธิ์เขียนข้อมูลลงฐานข้อมูล";
-               } else {
-                   text = error.message;
-               }
-
-               showMsg('<i class="fas fa-times-circle"></i> ' + text, "#e74c3c");
-               btn.innerHTML = "ยืนยันการสมัคร";
-               btn.disabled = false;
-           }
-       });
-
-       function showMsg(text, color) {
-           msg.innerHTML = text;
-           msg.style.color = color;
-           msg.style.display = "block";
-           msg.style.borderLeft = `5px solid ${color}`;
-       }
-   </script>
+        function showMsg(text, color) {
+            msg.innerHTML = text;
+            msg.style.color = color;
+            msg.style.display = "block";
+            msg.style.borderLeft = `5px solid ${color}`;
+        }
+    </script>
 
 </body>
 </html>
