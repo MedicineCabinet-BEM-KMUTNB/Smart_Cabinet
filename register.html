@@ -18,7 +18,6 @@
            --success-green: #2ecc71;
        }
 
-       /* ตั้งค่า Global ให้ใช้ Kanit ทั้งหมดเป็นพื้นฐาน */
        * {
            font-family: 'Kanit', sans-serif;
        }
@@ -42,7 +41,6 @@
        }
 
        .header-title {
-           /* ใช้ Cormorant Garamond เฉพาะตรงนี้ */
            font-family: 'Cormorant Garamond', serif;
            font-size: 3rem;
            font-weight: 600;
@@ -51,7 +49,6 @@
            color: #2c3e50;
        }
 
-       /* Badge Styles */
        .creator-badge,
        .co-badge {
            font-size: 0.85rem;
@@ -64,7 +61,9 @@
            letter-spacing: 0.5px;
        }
 
-       .co-badge b { color: var(--phyathai-dark-green); }
+       .co-badge b {
+           color: var(--phyathai-dark-green);
+       }
 
        .login-card {
            margin-top: 35px;
@@ -100,9 +99,15 @@
            font-weight: 300;
        }
 
-       .input-group { margin-bottom: 15px; }
+       .input-group {
+           margin-bottom: 15px;
+       }
 
-       label { font-size: 0.9rem; margin-left: 5px; color: #444; }
+       label {
+           font-size: 0.9rem;
+           margin-left: 5px;
+           color: #444;
+       }
 
        input {
            width: 100%;
@@ -155,7 +160,7 @@
            margin-top: 20px;
            font-size: 0.9rem;
        }
-      
+
        .back-link a {
            color: var(--accent-dark);
            text-decoration: none;
@@ -200,7 +205,7 @@
 
        <div class="input-group">
            <label><i class="fas fa-user me-1"></i> ชื่อผู้ใช้ (Username)</label>
-           <input type="text" id="username" placeholder="ภาษาอังกฤษ (เช่น admin)">
+           <input type="text" id="username" placeholder="ภาษาอังกฤษ (เช่น pitchapa)">
        </div>
 
        <div class="input-group">
@@ -209,7 +214,7 @@
        </div>
 
        <button id="btnRegister">ยืนยันการสมัคร</button>
-      
+
        <div class="back-link">
            <a href="index.html">กลับไปหน้าเข้าสู่ระบบ</a>
        </div>
@@ -220,7 +225,7 @@
    <script type="module">
        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
        import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-       import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+       import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
        const firebaseConfig = {
            apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
@@ -237,62 +242,81 @@
        const db = getDatabase(app);
        const msg = document.getElementById("msg");
 
-       document.getElementById("btnRegister").addEventListener("click", () => {
+       document.getElementById("btnRegister").addEventListener("click", async () => {
            const btn = document.getElementById("btnRegister");
            const fullname = document.getElementById("fullname").value.trim();
-           let username = document.getElementById("username").value.trim();
+           let username = document.getElementById("username").value.trim().toLowerCase();
            const password = document.getElementById("password").value;
 
-           msg.style.display = 'none';
+           msg.style.display = "none";
 
            if (!fullname || !username || !password) {
                showMsg('<i class="fas fa-exclamation-circle"></i> กรุณากรอกข้อมูลให้ครบ', "#e74c3c");
                return;
            }
 
-           if (!username.includes("@")) {
-               username += "@smartcabinet.com";
+           if (!/^[a-zA-Z0-9._-]+$/.test(username)) {
+               showMsg('<i class="fas fa-exclamation-circle"></i> Username ใช้ได้เฉพาะ a-z, A-Z, 0-9, จุด, ขีด, ขีดล่าง', "#e74c3c");
+               return;
            }
+
+           const usernameKey = username;
+           const email = username + "@smartcabinet.com";
 
            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> กำลังบันทึก...';
            btn.disabled = true;
 
-           createUserWithEmailAndPassword(auth, username, password)
-               .then((cred) => {
-                   const user = cred.user;
-                   const uid = user.uid;
+           try {
+               const userRef = ref(db, "users/" + usernameKey);
+               const snapshot = await get(userRef);
 
-                   updateProfile(user, {
-                       displayName: fullname
-                   }).then(() => {
-                       set(ref(db, "users/" + uid), {
-                           name: fullname,
-                           email: username,
-                           role: "staff"
-                       });
-
-                       showMsg('<i class="fas fa-check-circle"></i> สมัครสมาชิกสำเร็จ!', "#2ecc71");
-                      
-                       setTimeout(() => {
-                           window.location.href = "index.html";
-                       }, 1500);
-                   }).catch((error) => {
-                       console.error("Profile update error", error);
-                       btn.innerHTML = 'ยืนยันการสมัคร';
-                       btn.disabled = false;
-                   });
-               })
-               .catch((error) => {
-                   let text = "เกิดข้อผิดพลาด";
-                   if(error.code === "auth/email-already-in-use") text = "ชื่อผู้ใช้นี้ถูกใช้แล้ว";
-                   else if(error.code === "auth/weak-password") text = "รหัสผ่านต้องอย่างน้อย 6 ตัว";
-                   else text = error.message;
-
-                   showMsg('<i class="fas fa-times-circle"></i> ' + text, "#e74c3c");
-                  
-                   btn.innerHTML = 'ยืนยันการสมัคร';
+               if (snapshot.exists()) {
+                   showMsg('<i class="fas fa-times-circle"></i> ชื่อผู้ใช้นี้ถูกใช้แล้ว', "#e74c3c");
+                   btn.innerHTML = "ยืนยันการสมัคร";
                    btn.disabled = false;
+                   return;
+               }
+
+               const cred = await createUserWithEmailAndPassword(auth, email, password);
+               const user = cred.user;
+
+               await updateProfile(user, {
+                   displayName: fullname
                });
+
+               await set(ref(db, "users/" + usernameKey), {
+                  // uid: user.uid,
+                   name: fullname,
+                   email: email,
+                   role: "staff"
+               });
+
+               console.log("บันทึกข้อมูล users/" + usernameKey + " สำเร็จ");
+
+               showMsg('<i class="fas fa-check-circle"></i> สมัครสมาชิกสำเร็จ!', "#2ecc71");
+
+               setTimeout(() => {
+                   window.location.href = "index.html";
+               }, 1500);
+
+           } catch (error) {
+               console.error("Register error:", error);
+
+               let text = "เกิดข้อผิดพลาด";
+               if (error.code === "auth/email-already-in-use") {
+                   text = "ชื่อผู้ใช้นี้ถูกใช้แล้ว";
+               } else if (error.code === "auth/weak-password") {
+                   text = "รหัสผ่านต้องอย่างน้อย 6 ตัว";
+               } else if (error.code === "PERMISSION_DENIED") {
+                   text = "ไม่มีสิทธิ์เขียนข้อมูลลงฐานข้อมูล";
+               } else {
+                   text = error.message;
+               }
+
+               showMsg('<i class="fas fa-times-circle"></i> ' + text, "#e74c3c");
+               btn.innerHTML = "ยืนยันการสมัคร";
+               btn.disabled = false;
+           }
        });
 
        function showMsg(text, color) {
