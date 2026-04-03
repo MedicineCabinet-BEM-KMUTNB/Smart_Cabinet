@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login • Smart Cabinet</title>
 
-    <!-- Fonts & Icons -->
     <link
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap"
         rel="stylesheet">
@@ -33,17 +32,9 @@
         }
 
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .header-title {
@@ -185,7 +176,6 @@
 
             <button type="submit" id="btnLogin">เข้าสู่ระบบ</button>
 
-            <!-- 🔗 ลิงก์ไปสมัครสมาชิก -->
             <a href="register.html" style="text-decoration:none;">
                 <button type="button" class="register">สมัครสมาชิก</button>
             </a>
@@ -196,7 +186,13 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import {
+            getAuth,
+            signInWithEmailAndPassword,
+            signOut,
+            setPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
         import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
         const firebaseConfig = {
@@ -260,6 +256,7 @@
                 loginButton.disabled = true;
                 loginButton.innerText = "กำลังเข้าสู่ระบบ...";
 
+                await setPersistence(auth, browserLocalPersistence);
                 await signInWithEmailAndPassword(auth, email, password);
 
                 const snapshot = await get(ref(db, `users/${username}`));

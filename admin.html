@@ -194,8 +194,6 @@
 
     .badge-approved { background: #eafaf1; color: #1e8449; }
     .badge-pending { background: #fff6e5; color: #b9770e; }
-    .badge-admin { background: #eaf2ff; color: #2166d1; }
-    .badge-staff { background: #f0f3f6; color: #566573; }
 
     .role-select {
       padding: 8px 10px;
@@ -234,7 +232,7 @@
     <div class="topbar">
       <div class="title-wrap">
         <h1>จัดการผู้ใช้งาน</h1>
-        <p>ตรวจสอบรายชื่อ, อนุมัติการใช้งาน, และกำหนดสิทธิ์ผ่าน Firebase แบบอัตโนมัติ</p>
+        <p>ตรวจสอบรายชื่อ อนุมัติการใช้งาน และกำหนดสิทธิ์ผ่าน Firebase แบบอัตโนมัติ</p>
       </div>
 
       <div class="top-actions">
@@ -315,11 +313,24 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-    import { getDatabase, ref, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut,
+      setPersistence,
+      browserLocalPersistence
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+    import {
+      getDatabase,
+      ref,
+      onValue,
+      update,
+      remove,
+      get
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
     const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
+      apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
       authDomain: "slot-drug.firebaseapp.com",
       projectId: "slot-drug",
       storageBucket: "slot-drug.firebasestorage.app",
@@ -341,6 +352,7 @@
     const logoutBtn = document.getElementById("logoutBtn");
 
     let allUsers = [];
+    let hasSubscribedUsers = false;
 
     function formatDate(timestamp) {
       if (!timestamp) return "-";
@@ -481,6 +493,9 @@
     }
 
     function subscribeUsers() {
+      if (hasSubscribedUsers) return;
+      hasSubscribedUsers = true;
+
       const usersRef = ref(db, "users");
 
       onValue(usersRef, (snapshot) => {
@@ -497,56 +512,53 @@
         rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         allUsers = rows;
         renderTable();
+      }, (error) => {
+        console.error("อ่าน users ไม่สำเร็จ:", error);
+        alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");
       });
     }
-// 🔥 แก้เฉพาะส่วน onAuthStateChanged ให้เสถียร
 
-onAuthStateChanged(auth, async (user) => {
-  // ❗ รอให้ Firebase โหลด auth state จริง ๆ
-  if (user === undefined) return;
+    async function initAdminPage() {
+      try {
+        await setPersistence(auth, browserLocalPersistence);
 
-  if (!user) {
-    // รอเพิ่มอีกนิดกัน false redirect
-    setTimeout(() => {
-      if (!auth.currentUser) {
+        onAuthStateChanged(auth, async (user) => {
+          console.log("auth state:", user);
+
+          if (!user) {
+            window.location.href = "index.html";
+            return;
+          }
+
+          try {
+            const username = (user.email || "").split("@")[0];
+            const snapshot = await get(ref(db, `users/${username}`));
+
+            if (!snapshot.exists()) {
+              await signOut(auth);
+              window.location.href = "index.html";
+              return;
+            }
+
+            const userData = snapshot.val();
+
+            if (userData.role !== "admin") {
+              window.location.href = "dashboard.html";
+              return;
+            }
+
+            subscribeUsers();
+          } catch (error) {
+            console.error("error:", error);
+            await signOut(auth);
+            window.location.href = "index.html";
+          }
+        });
+      } catch (error) {
+        console.error("setPersistence error:", error);
         window.location.href = "index.html";
       }
-    }, 800);
-    return;
-  }
-
-  console.log("login แล้ว:", user.email);
-
-  try {
-    const username = user.email.split("@")[0];
-    const snapshot = await get(ref(db, `users/${username}`));
-
-    if (!snapshot.exists()) {
-      console.error("ไม่พบ user");
-      await signOut(auth);
-      window.location.href = "index.html";
-      return;
     }
-
-    const userData = snapshot.val();
-    console.log("userData:", userData);
-
-    // 🔥 เช็ค role
-    if (userData.role !== "admin") {
-      alert("คุณไม่มีสิทธิ์เข้า admin");
-      window.location.href = "dashboard.html";
-      return;
-    }
-
-    // ✅ เข้าได้แน่นอน
-    subscribeUsers();
-
-  } catch (error) {
-    console.error("error:", error);
-    await signOut(auth);
-    window.location.href = "index.html";
-  }
-});
 
     searchInput.addEventListener("input", renderTable);
     statusFilter.addEventListener("change", renderTable);
@@ -557,6 +569,8 @@ onAuthStateChanged(auth, async (user) => {
       await signOut(auth);
       window.location.href = "index.html";
     });
+
+    initAdminPage();
   </script>
 </body>
 </html>
