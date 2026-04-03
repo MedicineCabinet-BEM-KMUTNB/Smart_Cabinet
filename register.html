@@ -267,12 +267,12 @@
             btn.disabled = true;
 
             try {
-                // const cred = await createUserWithEmailAndPassword(auth, email, password);
-                // const user = cred.user;
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                const user = cred.user;
 
-                // await updateProfile(user, {
-                //     displayName: fullname
-                // });
+                await updateProfile(user, {
+                    displayName: fullname
+                });
 
                 await set(ref(db, "users/" + usernameKey), {
                     name: fullname,
