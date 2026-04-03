@@ -228,7 +228,7 @@
             // 1. Reference to the specific user node in your Realtime Database
             const userRef = ref(db, "users/" + usernameInput);
 
-            
+
             get(userRef).then((snapshot) => {
                 if (snapshot.exists()) {
                     // 2. Get the email associated with this username from your DB
@@ -236,6 +236,7 @@
                     console.log(userData)
                     const email = userData.email;
                     const approval = userData.approval
+                    const role = userData.role
                     if (!approval) {
                         // DB Failure: Username doesn't exist
                         errorMsg.innerText = "ไม่มีสิทธิ์เข้าใช้งาน";
@@ -247,7 +248,12 @@
                     signInWithEmailAndPassword(auth, email, password)
                         .then(() => {
                             // Success: Redirect to dashboard
-                            window.location.href = "dashboard.html";
+                            if(role === 'admin'){
+                                window.location.href = "admin.html";
+                            }else{
+                                window.location.href = "dashboard.html";
+                            }
+                            
                         })
                         .catch((error) => {
                             // Auth Failure: Wrong password or auth issues
