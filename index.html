@@ -196,8 +196,8 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
@@ -212,66 +212,100 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getDatabase(app);
-        const msg = document.getElementById("msg");
 
-        function formatEmail(username) {
+        const errorMsg = document.getElementById("error-msg");
+        const loginForm = document.getElementById("loginForm");
+        const loginButton = document.getElementById("btnLogin");
+
+        function showError(message) {
+            errorMsg.innerText = message;
+            errorMsg.style.display = "block";
+        }
+
+        function hideError() {
+            errorMsg.innerText = "";
+            errorMsg.style.display = "none";
+        }
+
+        function usernameToEmail(username) {
             return username.includes("@") ? username : username + "@smartcabinet.com";
         }
 
-        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        loginForm.addEventListener("submit", async (e) => {
             e.preventDefault();
+            hideError();
 
-            const usernameInput = document.getElementById('username').value.trim();
+            const username = document.getElementById("username").value.trim().toLowerCase();
             const password = document.getElementById("password").value;
-            const errorMsg = document.getElementById("error-msg");
 
-            // 1. Reference to the specific user node in your Realtime Database
-            const userRef = ref(db, "users/" + usernameInput);
+            if (!username || !password) {
+                showError("กรุณากรอกชื่อผู้ใช้และรหัสผ่าน");
+                return;
+            }
 
+            if (password.length < 6) {
+                showError("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+                return;
+            }
 
-            get(userRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    // 2. Get the email associated with this username from your DB
-                    const userData = snapshot.val();
-                    console.log(userData)
-                    const email = userData.email;
-                    const approval = userData.approval
-                    const role = userData.role
-                    if (!approval) {
-                        // DB Failure: Username doesn't exist
-                        errorMsg.innerText = "ไม่มีสิทธิ์เข้าใช้งาน";
-                        errorMsg.style.display = "block";
-                        return;
-                    }
+            const invalidChars = /[.#$[\]]/;
+            if (invalidChars.test(username)) {
+                showError("ชื่อผู้ใช้มีอักขระที่ไม่อนุญาต");
+                return;
+            }
 
-                    // 3. Perform the Firebase Auth sign-in
-                    signInWithEmailAndPassword(auth, email, password)
-                        .then(() => {
-                            // Success: Redirect to dashboard
-                            if(role === 'admin'){
-                                window.location.href = "admin.html";
-                            }else{
-                                window.location.href = "dashboard.html";
-                            }
-                            
-                        })
-                        .catch((error) => {
-                            // Auth Failure: Wrong password or auth issues
-                            console.error("Auth Error:", error);
-                            errorMsg.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
-                            errorMsg.style.display = "block";
-                        });
-                } else {
-                    // DB Failure: Username doesn't exist
-                    errorMsg.innerText = "ไม่พบชื่อผู้ใช้นี้ในระบบ";
-                    errorMsg.style.display = "block";
+            const email = usernameToEmail(username);
+
+            try {
+                loginButton.disabled = true;
+                loginButton.innerText = "กำลังเข้าสู่ระบบ...";
+
+                await signInWithEmailAndPassword(auth, email, password);
+
+                const snapshot = await get(ref(db, `users/${username}`));
+
+                if (!snapshot.exists()) {
+                    await signOut(auth);
+                    showError("ไม่พบข้อมูลผู้ใช้ในระบบ");
+                    return;
                 }
-            }).catch((error) => {
-                // Technical Failure: Database connection issues
-                console.error("Database Error:", error);
-                errorMsg.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล";
-                errorMsg.style.display = "block";
-            });
+
+                const userData = snapshot.val();
+
+                if (!userData.approval) {
+                    await signOut(auth);
+                    showError("บัญชียังไม่ได้รับการอนุมัติ");
+                    return;
+                }
+
+                if (userData.role === "admin") {
+                    window.location.href = "admin.html";
+                } else if (userData.role === "staff") {
+                    window.location.href = "dashboard.html";
+                } else {
+                    await signOut(auth);
+                    showError("บทบาทของผู้ใช้งานไม่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบ");
+                }
+            } catch (error) {
+                console.error("Login error:", error.code, error.message);
+
+                switch (error.code) {
+                    case "auth/invalid-credential":
+                    case "auth/wrong-password":
+                    case "auth/user-not-found":
+                    case "auth/invalid-email":
+                        showError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
+                        break;
+                    case "auth/network-request-failed":
+                        showError("ไม่สามารถเชื่อมต่อเครือข่ายได้");
+                        break;
+                    default:
+                        showError("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+                }
+            } finally {
+                loginButton.disabled = false;
+                loginButton.innerText = "เข้าสู่ระบบ";
+            }
         });
     </script>
 
