@@ -228,6 +228,7 @@
             // 1. Reference to the specific user node in your Realtime Database
             const userRef = ref(db, "users/" + usernameInput);
 
+            
             get(userRef).then((snapshot) => {
                 if (snapshot.exists()) {
                     // 2. Get the email associated with this username from your DB
