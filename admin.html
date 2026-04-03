@@ -1,61 +1,48 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Role Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <title>Admin Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #6a11cb, #2575fc);
-            color: #fff;
+            font-family: 'Kanit', sans-serif;
+            background: linear-gradient(-45deg, #a1c4fd, #c2e9fb, #fbc2eb, #f6d365);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             min-height: 100vh;
-            margin: 0;
             display: flex;
-            justify-content: center;
             align-items: center;
-        }
-        .container {
-            background: #ffffff;
-            color: #333;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            justify-content: center;
+            flex-direction: column;
             padding: 20px;
-            max-width: 900px;
-            width: 100%;
         }
-        h1 {
-            font-weight: bold;
-            color: #6a11cb;
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
-        .btn-primary {
-            background-color: #6a11cb;
-            border-color: #6a11cb;
-        }
-        .btn-primary:hover {
-            background-color: #2575fc;
-            border-color: #2575fc;
-        }
-        .table-container {
-            max-height: 400px;
-            overflow-y: auto;
-            margin-top: 20px;
-        }
-        .table thead {
-            background-color: #6a11cb;
-            color: #fff;
-        }
-        .badge {
-            font-size: 1rem;
-            padding: 0.5em 1em;
+
+        .header-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-weight: 600;
+            font-style: italic;
+            color: #2c3e50;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
     </style>
 </head>
 <body>
+<<<<<<< HEAD
     <div class="container">
         <a href="./dashboard.html" class="btn btn-secondary mb-3">Go to Dashboard</a>
 
@@ -84,6 +71,32 @@
                 </tbody>
             </table>
         </div>
+=======
+    <div class="container text-center mt-5">
+        <h1 class="header-title">Admin Page</h1>
+        <p>จัดการข้อมูลผู้ใช้งาน</p>
+
+        <!-- ลิงก์ไปยังหน้า Dashboard -->
+        <a href="dashboard.html" class="btn btn-primary mb-3">ไปที่ Dashboard</a>
+
+        <!-- ปุ่มสำหรับเพิ่มผู้ใช้งาน -->
+        <button class="btn btn-success mb-3" onclick="addUser()">เพิ่มผู้ใช้งาน</button>
+
+        <!-- ตารางแสดงข้อมูลผู้ใช้งาน -->
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>#</th>
+                    <th>ชื่อผู้ใช้งาน</th>
+                    <th>Role</th>
+                    <th>การจัดการ</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <!-- รายการผู้ใช้งานจะถูกเพิ่มที่นี่ -->
+            </tbody>
+        </table>
+>>>>>>> 086b1a5 (update admin page layout and styling; change language to Thai and enhance user interface)
     </div>
 
     <script>
@@ -95,13 +108,7 @@
         function renderTable() {
             const userTable = document.getElementById("userTable");
             userTable.innerHTML = "";
-            let adminCount = 0;
-            let staffCount = 0;
-
             users.forEach((user, index) => {
-                if (user.role === "Admin") adminCount++;
-                if (user.role === "Staff") staffCount++;
-
                 userTable.innerHTML += `
                     <tr>
                         <td>${index + 1}</td>
@@ -113,16 +120,11 @@
                             </select>
                         </td>
                         <td>
-                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">
-                                <i class="fas fa-trash-alt"></i> ลบ
-                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">ลบ</button>
                         </td>
                     </tr>
                 `;
             });
-
-            document.getElementById("adminCount").innerText = adminCount;
-            document.getElementById("staffCount").innerText = staffCount;
         }
 
         function addUser() {
@@ -153,7 +155,7 @@
             }
         }
 
-        // เรียกใช้ฟังก์ชันเพื่อแสดงข้อมูลเริ่มต้น
+        // แสดงข้อมูลเริ่มต้นในตาราง
         renderTable();
     </script>
 </body>
