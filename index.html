@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login • Smart Cabinet</title>
 
     <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
@@ -30,9 +33,17 @@
         }
 
         @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .header-title {
@@ -47,23 +58,25 @@
             font-family: 'Outfit', sans-serif;
             font-size: 0.75rem;
             text-transform: uppercase;
-            background: rgba(255,255,255,0.45);
+            background: rgba(255, 255, 255, 0.45);
             padding: 7px 22px;
             border-radius: 999px;
             margin-top: 10px;
         }
 
-        .co-badge b { color: var(--phyathai-dark-green); }
+        .co-badge b {
+            color: var(--phyathai-dark-green);
+        }
 
         .login-card {
             margin-top: 35px;
             width: 100%;
             max-width: 380px;
             padding: 32px 28px;
-            background: rgba(255,255,255,0.35);
+            background: rgba(255, 255, 255, 0.35);
             border-radius: 26px;
             backdrop-filter: blur(22px);
-            box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
         }
 
         .login-badge-label {
@@ -88,9 +101,13 @@
             margin-bottom: 20px;
         }
 
-        .input-group { margin-bottom: 15px; }
+        .input-group {
+            margin-bottom: 15px;
+        }
 
-        label { font-size: 0.9rem; }
+        label {
+            font-size: 0.9rem;
+        }
 
         input {
             width: 100%;
@@ -119,7 +136,7 @@
         #error-msg {
             display: none;
             color: #e74c3c;
-            background: rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.6);
             padding: 6px;
             border-radius: 8px;
             text-align: center;
@@ -180,6 +197,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCEDJ0GGOqxPGik5huW9XdNEgcnlMs_ebM",
@@ -192,26 +210,62 @@
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
+        const db = getDatabase(app);
+        const msg = document.getElementById("msg");
 
         function formatEmail(username) {
             return username.includes("@") ? username : username + "@smartcabinet.com";
         }
 
-        document.getElementById("loginForm").addEventListener("submit", (e) => {
+        document.getElementById("loginForm").addEventListener("submit", async (e) => {
             e.preventDefault();
 
-            const email = formatEmail(username.value.trim());
+            const usernameInput = document.getElementById('username').value.trim();
             const password = document.getElementById("password").value;
             const errorMsg = document.getElementById("error-msg");
 
-            signInWithEmailAndPassword(auth, email, password)
-                .then(() => window.location.href = "dashboard.html")
-                .catch(() => {
-                    errorMsg.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+            // 1. Reference to the specific user node in your Realtime Database
+            const userRef = ref(db, "users/" + usernameInput);
+
+            get(userRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    // 2. Get the email associated with this username from your DB
+                    const userData = snapshot.val();
+                    const email = userData.email;
+                    const approval = userData.approval
+                    if (!approval) {
+                        // DB Failure: Username doesn't exist
+                        errorMsg.innerText = "ไม่มีสิทธิ์เข้าใช้งาน";
+                        errorMsg.style.display = "block";
+                        return;
+                    }
+
+                    // 3. Perform the Firebase Auth sign-in
+                    signInWithEmailAndPassword(auth, email, password)
+                        .then(() => {
+                            // Success: Redirect to dashboard
+                            window.location.href = "dashboard.html";
+                        })
+                        .catch((error) => {
+                            // Auth Failure: Wrong password or auth issues
+                            console.error("Auth Error:", error);
+                            errorMsg.innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+                            errorMsg.style.display = "block";
+                        });
+                } else {
+                    // DB Failure: Username doesn't exist
+                    errorMsg.innerText = "ไม่พบชื่อผู้ใช้นี้ในระบบ";
                     errorMsg.style.display = "block";
-                });
+                }
+            }).catch((error) => {
+                // Technical Failure: Database connection issues
+                console.error("Database Error:", error);
+                errorMsg.innerText = "เกิดข้อผิดพลาดในการเชื่อมต่อฐานข้อมูล";
+                errorMsg.style.display = "block";
+            });
         });
     </script>
 
 </body>
+
 </html>
