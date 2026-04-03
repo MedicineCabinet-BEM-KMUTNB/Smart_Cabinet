@@ -1,1 +1,161 @@
-no code <a href="./dashboard.html">dashboard</a>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Role Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: #ffffff;
+            color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        h1 {
+            font-weight: bold;
+            color: #6a11cb;
+        }
+        .btn-primary {
+            background-color: #6a11cb;
+            border-color: #6a11cb;
+        }
+        .btn-primary:hover {
+            background-color: #2575fc;
+            border-color: #2575fc;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .table thead {
+            background-color: #6a11cb;
+            color: #fff;
+        }
+        .badge {
+            font-size: 1rem;
+            padding: 0.5em 1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="./dashboard.html" class="btn btn-secondary mb-3">Go to Dashboard</a>
+
+        <h1 class="text-center mb-4">Admin Role Management</h1>
+    <div class="container">
+        <h1 class="text-center mb-4">Admin Role Management</h1>
+        <div class="d-flex justify-content-between mb-3">
+            <button class="btn btn-primary" onclick="addUser()">เพิ่มผู้ใช้งาน</button>
+            <div>
+                <span class="badge bg-success">Admin: <span id="adminCount">0</span></span>
+                <span class="badge bg-info">Staff: <span id="staffCount">0</span></span>
+            </div>
+        </div>
+        <div class="table-container">
+            <table class="table table-bordered table-hover">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>ชื่อผู้ใช้งาน</th>
+                        <th>Role</th>
+                        <th>การจัดการ</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                    <!-- รายการผู้ใช้งานจะถูกเพิ่มที่นี่ -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let users = [
+            { id: 1, name: "John Doe", role: "Admin" },
+            { id: 2, name: "Jane Smith", role: "Staff" }
+        ];
+
+        function renderTable() {
+            const userTable = document.getElementById("userTable");
+            userTable.innerHTML = "";
+            let adminCount = 0;
+            let staffCount = 0;
+
+            users.forEach((user, index) => {
+                if (user.role === "Admin") adminCount++;
+                if (user.role === "Staff") staffCount++;
+
+                userTable.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${user.name}</td>
+                        <td>
+                            <select class="form-select" onchange="updateRole(${user.id}, this.value)">
+                                <option value="Admin" ${user.role === "Admin" ? "selected" : ""}>Admin</option>
+                                <option value="Staff" ${user.role === "Staff" ? "selected" : ""}>Staff</option>
+                            </select>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash-alt"></i> ลบ
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("adminCount").innerText = adminCount;
+            document.getElementById("staffCount").innerText = staffCount;
+        }
+
+        function addUser() {
+            const name = prompt("กรุณากรอกชื่อผู้ใช้งาน:");
+            if (name) {
+                const newUser = {
+                    id: users.length ? users[users.length - 1].id + 1 : 1,
+                    name: name,
+                    role: "Staff"
+                };
+                users.push(newUser);
+                renderTable();
+            }
+        }
+
+        function updateRole(id, newRole) {
+            const user = users.find(user => user.id === id);
+            if (user) {
+                user.role = newRole;
+                renderTable();
+            }
+        }
+
+        function deleteUser(id) {
+            if (confirm("คุณต้องการลบผู้ใช้งานนี้หรือไม่?")) {
+                users = users.filter(user => user.id !== id);
+                renderTable();
+            }
+        }
+
+        // เรียกใช้ฟังก์ชันเพื่อแสดงข้อมูลเริ่มต้น
+        renderTable();
+    </script>
+</body>
+</html>
+>>>>>>> cd66361 (add button to redirect to dahsboard)
