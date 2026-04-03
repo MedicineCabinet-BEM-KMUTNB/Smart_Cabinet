@@ -232,6 +232,7 @@
                 if (snapshot.exists()) {
                     // 2. Get the email associated with this username from your DB
                     const userData = snapshot.val();
+                    console.log(userData)
                     const email = userData.email;
                     const approval = userData.approval
                     if (!approval) {
