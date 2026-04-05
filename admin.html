@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Approval • Smart Cabinet</title>
 
-  <!-- นำเข้า Fonts แบบเดียวกับหน้า Login -->
+  <!-- นำเข้า Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
@@ -24,6 +24,7 @@
       --orange: rgba(243, 156, 18, 0.7);
       --red: rgba(231, 76, 60, 0.7);
       --blue: rgba(52, 152, 219, 0.7);
+      --purple: rgba(155, 89, 182, 0.7);
     }
 
     * { box-sizing: border-box; }
@@ -93,7 +94,7 @@
       font-weight: 500;
       backdrop-filter: blur(12px); /* เอฟเฟกต์กระจกฝ้า */
       -webkit-backdrop-filter: blur(12px);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.6); /* เงาด้านนอกและแสงตกกระทบด้านใน */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.6);
       transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       display: inline-flex;
       align-items: center;
@@ -118,6 +119,7 @@
     .btn-green { background: var(--green); color: white; }
     .btn-red { background: var(--red); color: white; }
     .btn-orange { background: var(--orange); color: white; }
+    .btn-purple { background: var(--purple); color: white; }
 
     .stats {
       display: grid;
@@ -232,6 +234,27 @@
       background: rgba(255,255,255,0.7);
     }
 
+    /* --- Table Sorting --- */
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.2s;
+    }
+    th.sortable:hover {
+      background: rgba(220, 230, 255, 0.9);
+    }
+    .sort-icon {
+      margin-left: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+      opacity: 0.4;
+      transition: opacity 0.2s;
+    }
+    th.sortable.active .sort-icon {
+      opacity: 1;
+      color: var(--blue);
+    }
+
     .badge {
       display: inline-block;
       padding: 6px 12px;
@@ -286,27 +309,6 @@
     .toast.error { border-color: var(--red); }
     .toast.warning { border-color: var(--orange); }
 
-    /* --- Table Sorting --- */
-    th.sortable {
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.2s;
-    }
-    th.sortable:hover {
-      background: rgba(220, 230, 255, 0.9);
-    }
-    .sort-icon {
-      margin-left: 6px;
-      font-size: 0.8rem;
-      color: var(--muted);
-      opacity: 0.4;
-      transition: opacity 0.2s;
-    }
-    th.sortable.active .sort-icon {
-      opacity: 1;
-      color: var(--blue);
-    }
-
     @media (max-width: 900px) {
       .stats {
         grid-template-columns: repeat(2, minmax(160px, 1fr));
@@ -329,6 +331,10 @@
       </div>
 
       <div class="top-actions">
+        <!-- ปุ่มไปหน้าจัดการคลังยา -->
+        <button class="btn btn-purple" onclick="window.location.href='inventory.html'">
+          <i class="fa-solid fa-boxes-stacked"></i> จัดการคลังยา
+        </button>
         <button class="btn btn-dark" onclick="window.location.href='dashboard.html'">
           <i class="fa-solid fa-table-columns"></i> ไปหน้าหลัก
         </button>
@@ -437,38 +443,20 @@
     const db = getDatabase(app);
 
     // ==========================================
-    // ปรับแต่ง UI ด้วย JavaScript (ปรับปรุงใหม่)
+    // ปรับแต่ง UI ด้วย JavaScript
     // ==========================================
 
     // สร้าง Footer ใหม่โดยปรับฟอนต์ให้โมเดิร์นขึ้น (ไม่เอียง ใช้ฟอนต์ Outfit/Kanit)
     const footer = document.createElement("footer");
     footer.style.marginTop = "40px";
     footer.style.textAlign = "center";
-    footer.style.fontFamily = "'Outfit', 'Kanit', sans-serif"; // เปลี่ยนฟอนต์ตรงนี้
+    footer.style.fontFamily = "'Outfit', 'Kanit', sans-serif";
     footer.style.fontWeight = "500";
-    footer.style.color = "#2c3e50"; // สีเข้มขึ้นให้อ่านง่ายบนพื้นหลังสว่าง
+    footer.style.color = "#2c3e50"; 
     footer.style.letterSpacing = "0.5px";
     footer.style.opacity = "0.8";
     footer.innerText = "Admin Dashboard • Smart Cabinet Project";
     document.body.appendChild(footer);
-
-    // ==========================================
-    // ระบบจัดการตารางผู้ใช้
-    // ==========================================
-    const tableBody = document.getElementById("userTableBody");
-    const emptyState = document.getElementById("emptyState");
-    const searchInput = document.getElementById("searchInput");
-    const statusFilter = document.getElementById("statusFilter");
-    const roleFilter = document.getElementById("roleFilter");
-    const refreshBtn = document.getElementById("refreshBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-
-    let allUsers = [];
-    let hasSubscribedUsers = false;
-
-    // Sorting State
-    let sortCol = "createdAt";
-    let sortDesc = true;
 
     // ==========================================
     // ระบบ Toast Notification
@@ -503,6 +491,24 @@
         setTimeout(() => toast.remove(), 400);
       }, 3000);
     }
+
+    // ==========================================
+    // ระบบจัดการตารางผู้ใช้
+    // ==========================================
+    const tableBody = document.getElementById("userTableBody");
+    const emptyState = document.getElementById("emptyState");
+    const searchInput = document.getElementById("searchInput");
+    const statusFilter = document.getElementById("statusFilter");
+    const roleFilter = document.getElementById("roleFilter");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    let allUsers = [];
+    let hasSubscribedUsers = false;
+
+    // Sorting State
+    let sortCol = "createdAt";
+    let sortDesc = true;
 
     function formatDate(timestamp) {
       if (!timestamp) return "-";
@@ -706,9 +712,8 @@
           createdAt: value.createdAt || 0
         }));
 
-        rows.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
         allUsers = rows;
-        renderTable();
+        renderTable(); // จะถูกจัดเรียงในฟังก์ชัน getFilteredUsers อีกที
       }, (error) => {
         console.error("อ่าน users ไม่สำเร็จ:", error);
         alert("ไม่สามารถโหลดข้อมูลผู้ใช้ได้");

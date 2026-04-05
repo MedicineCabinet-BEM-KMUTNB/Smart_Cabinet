@@ -563,7 +563,8 @@
         const updates = {};
         parsedExcelData.forEach((drug, index) => {
           // พยายามหาคีย์ที่เป็น "รหัสยา" หรือ "Code" ถ้าไม่มีใช้ index เป็น key
-          let drugCode = drug['รหัสยา'] || drug['DrugCode'] || drug['code'] || `drug_${index+1}`;
+          // รองรับหัวคอลัมน์ Drug_Code ตามไฟล์ Excel ของคุณแล้ว
+          let drugCode = drug['รหัสยา'] || drug['Drug_Code'] || drug['DrugCode'] || drug['code'] || `drug_${index+1}`;
           // ทำให้ key ไม่มีอักขระพิเศษที่ firebase ห้าม (# $ [ ] . )
           drugCode = String(drugCode).replace(/[.#$\[\]]/g, "_"); 
           updates[`master_drugs/${drugCode}`] = drug;
@@ -593,9 +594,10 @@
         if (snapshot.exists()) {
           const drugs = snapshot.val();
           Object.values(drugs).forEach(drug => {
-            // หาส่วนที่เป็นชื่อยา
-            const drugName = drug['ชื่อยา'] || drug['DrugName'] || drug['name'] || '-';
-            const drugCode = drug['รหัสยา'] || drug['DrugCode'] || '';
+            // หาส่วนที่เป็นชื่อยา (รองรับ Drug_Name_TH และ Drug_Name แบบมีขีดล่างแล้ว)
+            // โดยจะให้ความสำคัญกับ Drug_Name_TH ก่อน ถ้าไม่มีค่อยเอา Drug_Name ภาษาอังกฤษ
+            const drugName = drug['ชื่อยา'] || drug['Drug_Name_TH'] || drug['Drug_Name'] || drug['DrugName'] || drug['name'] || '-';
+            const drugCode = drug['รหัสยา'] || drug['Drug_Code'] || drug['DrugCode'] || '';
             
             const option = document.createElement('option');
             // แสดง "รหัสยา: ชื่อยา"
