@@ -313,7 +313,7 @@
     <div class="topbar">
       <div class="title-wrap">
         <h1>จัดการคลังยา</h1>
-        <p>อัปโหลดฐานข้อมูลยา และเติมยาเข้าตู้ (Stock In)</p>
+        <p>อัปโหลดฐานข้อมูลยา และเติมยาเข้าคลัง (Stock In)</p>
       </div>
       <div class="top-actions">
         <button class="btn btn-dark" onclick="window.location.href='dashboard.html'">
@@ -328,7 +328,7 @@
           <i class="fa-solid fa-file-excel"></i> ฐานข้อมูลยา (Master Data)
         </button>
         <button class="tab-btn" onclick="switchTab('stock')">
-          <i class="fa-solid fa-box-open"></i> เติมยาเข้าตู้ (Stock In)
+          <i class="fa-solid fa-box-open"></i> เติมยาเข้าคลัง (Stock In)
         </button>
       </div>
 
@@ -363,14 +363,13 @@
         </div>
       </div>
 
-      <!-- Tab 2: เติมยาเข้าตู้ (Stock In) -->
+      <!-- Tab 2: เติมยาเข้าคลัง (Stock In) -->
       <div id="tab-stock" class="tab-content">
         <div style="max-width: 600px; margin: 0 auto;">
-          <h3 style="text-align: center; margin-bottom: 24px;">แบบฟอร์มนำยาเข้าตู้ (Stock In)</h3>
+          <h3 style="text-align: center; margin-bottom: 24px;">แบบฟอร์มนำยาเข้าคลัง (Stock In)</h3>
           
           <div class="form-group">
             <label>ค้นหาชื่อยา / รหัสยา (Autocomplete)</label>
-            <!-- input list คู่กับ datalist ทำให้เกิด dropdown ค้นหาได้ -->
             <input type="text" class="form-control" id="drugInput" list="drugList" placeholder="พิมพ์ชื่อยาที่ต้องการเติม..." autocomplete="off">
             <datalist id="drugList">
               <!-- ข้อมูลยาจาก Firebase จะถูกโหลดมาใส่ตรงนี้ -->
@@ -394,20 +393,17 @@
               <input type="number" class="form-control" id="qtyInput" placeholder="ระบุจำนวน" min="1">
             </div>
             <div class="form-group">
-              <label>เก็บที่ช่อง (Slot)</label>
-              <select class="form-control" id="slotInput">
-                <option value="" disabled selected>เลือกช่องตู้ยา</option>
-                <option value="slot_1">Slot 1</option>
-                <option value="slot_2">Slot 2</option>
-                <option value="slot_3">Slot 3</option>
-                <option value="slot_4">Slot 4</option>
-                <option value="slot_5">Slot 5</option>
-              </select>
+              <label>เลขช่องเก็บยา (Slot Number)</label>
+              <!-- เปลี่ยนจาก select เป็น input แบบมี datalist เพื่อความยืดหยุ่นสูงสุด -->
+              <input type="number" class="form-control" id="slotInput" list="slotList" placeholder="พิมพ์เลขช่อง (เช่น 1, 35)..." min="1" autocomplete="off">
+              <datalist id="slotList">
+                <!-- ข้อมูลจากโหนด /slots จะถูกดึงมาใส่ตรงนี้อัตโนมัติ -->
+              </datalist>
             </div>
           </div>
 
           <button class="btn btn-purple" id="stockInBtn" style="width: 100%; justify-content: center; margin-top: 16px; padding: 14px; font-size: 1.1rem;">
-            <i class="fa-solid fa-boxes-packing"></i> บันทึกการเติมยาเข้าตู้
+            <i class="fa-solid fa-boxes-packing"></i> บันทึกการเติมยาเข้าคลัง
           </button>
         </div>
       </div>
@@ -416,7 +412,7 @@
   </div>
 
   <script type="module">
-    // Firebase Config (ดึงมาจาก admin.html)
+    // Firebase Config
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
     import { getDatabase, ref, get, set, update, push, onValue } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
@@ -435,12 +431,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
 
-    let parsedExcelData = []; // ตัวแปรเก็บข้อมูล Excel ชั่วคราว
+    let parsedExcelData = []; 
 
-    // ==========================================
-    // UI ควบคุมการทำงานทั่วไป
-    // ==========================================
-    
     // ตรวจสอบสิทธิ์ (Auth) ป้องกันคนนอกเข้า
     onAuthStateChanged(auth, (user) => {
       if (!user) {
@@ -486,6 +478,43 @@
     }
 
     // ==========================================
+    // ผูกข้อมูลช่อง (Slot) กับโหนด /slots ใน Firebase
+    // ==========================================
+    function bindSlotsFromFirebase() {
+      const slotList = document.getElementById('slotList');
+      const slotsRef = ref(db, 'slots'); // ดึงข้อมูลจากโหนด slots โดยตรง
+      
+      onValue(slotsRef, (snapshot) => {
+        slotList.innerHTML = ''; // ล้างค่าเก่า
+        if (snapshot.exists()) {
+          const slotsData = snapshot.val();
+          
+          Object.keys(slotsData).forEach(key => {
+            // ข้ามข้อมูลขยะหรือ index 0 (ถ้ามี)
+            if (key === "0" && !slotsData[key]) return;
+            
+            const option = document.createElement('option');
+            option.value = key; // เลขช่อง เช่น 1, 2, 3
+            
+            // พยายามแสดงชื่อยาในช่องนั้น เพื่อให้แอดมินรู้สถานะปัจจุบัน
+            let drugStatus = "ช่องว่าง / ไม่มีชื่อยา";
+            if (slotsData[key] && slotsData[key].tradeName) {
+              drugStatus = slotsData[key].tradeName;
+            } else if (slotsData[key] && slotsData[key].name) {
+              drugStatus = slotsData[key].name;
+            }
+            
+            // คำอธิบายจะโผล่ขึ้นมาตอนพิมพ์ตัวเลขในช่องกรอก
+            option.text = `ข้อมูลปัจจุบัน: ${drugStatus}`;
+            slotList.appendChild(option);
+          });
+        }
+      });
+    }
+    // เรียกใช้งานฟังก์ชันดึง Slot
+    bindSlotsFromFirebase();
+
+    // ==========================================
     // ระบบอ่านไฟล์ Excel (SheetJS)
     // ==========================================
     document.getElementById('excelFile').addEventListener('change', function(e) {
@@ -497,12 +526,9 @@
         try {
           const data = new Uint8Array(event.target.result);
           const workbook = XLSX.read(data, {type: 'array'});
-          
-          // อ่านชีตแรกสุด
           const firstSheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[firstSheetName];
           
-          // แปลงเป็น JSON
           parsedExcelData = XLSX.utils.sheet_to_json(worksheet);
           
           if(parsedExcelData.length > 0) {
@@ -526,7 +552,6 @@
       thead.innerHTML = '';
       tbody.innerHTML = '';
 
-      // ดึง Header จาก keys ของออบเจกต์ตัวแรก
       const headers = Object.keys(dataArray[0]);
       headers.forEach(header => {
         const th = document.createElement('th');
@@ -534,7 +559,6 @@
         thead.appendChild(th);
       });
 
-      // ดึงข้อมูล 10 แถวแรกมาเป็นพรีวิว
       const previewData = dataArray.slice(0, 10);
       previewData.forEach(row => {
         const tr = document.createElement('tr');
@@ -550,7 +574,7 @@
     }
 
     // ==========================================
-    // ระบบบันทึก Master Data เข้า Firebase
+    // ระบบบันทึก Master Data
     // ==========================================
     document.getElementById('saveDbBtn').addEventListener('click', async () => {
       if (parsedExcelData.length === 0) return;
@@ -559,21 +583,15 @@
       if (!confirmSave) return;
 
       try {
-        // ใช้ update แบบรวบยอด (Batch update) เพื่อความเร็ว
         const updates = {};
         parsedExcelData.forEach((drug, index) => {
-          // พยายามหาคีย์ที่เป็น "รหัสยา" หรือ "Code" ถ้าไม่มีใช้ index เป็น key
-          // รองรับหัวคอลัมน์ Drug_Code ตามไฟล์ Excel ของคุณแล้ว
           let drugCode = drug['รหัสยา'] || drug['Drug_Code'] || drug['DrugCode'] || drug['code'] || `drug_${index+1}`;
-          // ทำให้ key ไม่มีอักขระพิเศษที่ firebase ห้าม (# $ [ ] . )
           drugCode = String(drugCode).replace(/[.#$\[\]]/g, "_"); 
           updates[`master_drugs/${drugCode}`] = drug;
         });
 
         await update(ref(db), updates);
         showToast("บันทึกฐานข้อมูลยาลงระบบสำเร็จ!", "success");
-        
-        // โหลดข้อมูลใส่ Datalist ทันที
         loadMasterDrugs();
 
       } catch (error) {
@@ -583,56 +601,51 @@
     });
 
     // ==========================================
-    // ระบบ Stock In (โหลดข้อมูลยาใส่ Autocomplete)
+    // โหลดรายชื่อยา
     // ==========================================
     function loadMasterDrugs() {
       const datalist = document.getElementById('drugList');
       const masterRef = ref(db, 'master_drugs');
       
       onValue(masterRef, (snapshot) => {
-        datalist.innerHTML = ''; // ล้างของเก่า
+        datalist.innerHTML = ''; 
         if (snapshot.exists()) {
           const drugs = snapshot.val();
           Object.values(drugs).forEach(drug => {
-            // หาส่วนที่เป็นชื่อยา (รองรับ Drug_Name_TH และ Drug_Name แบบมีขีดล่างแล้ว)
-            // โดยจะให้ความสำคัญกับ Drug_Name_TH ก่อน ถ้าไม่มีค่อยเอา Drug_Name ภาษาอังกฤษ
             const drugName = drug['ชื่อยา'] || drug['Drug_Name_TH'] || drug['Drug_Name'] || drug['DrugName'] || drug['name'] || '-';
             const drugCode = drug['รหัสยา'] || drug['Drug_Code'] || drug['DrugCode'] || '';
             
             const option = document.createElement('option');
-            // แสดง "รหัสยา: ชื่อยา"
             option.value = `${drugCode} | ${drugName}`;
             datalist.appendChild(option);
           });
         }
       });
     }
-
-    // เรียกโหลดรายชื่อยาทันทีตอนเปิดหน้า
     loadMasterDrugs();
 
     // ==========================================
-    // จัดการบันทึกการเติมยาเข้าตู้ (Submit Stock In)
+    // ส่งข้อมูล Stock In
     // ==========================================
     document.getElementById('stockInBtn').addEventListener('click', async () => {
       const drugVal = document.getElementById('drugInput').value.trim();
       const lotVal = document.getElementById('lotInput').value.trim();
       const expVal = document.getElementById('expInput').value;
       const qtyVal = parseInt(document.getElementById('qtyInput').value);
-      const slotVal = document.getElementById('slotInput').value;
+      const slotInputVal = document.getElementById('slotInput').value.trim();
 
-      // ตรวจสอบความถูกต้องของข้อมูล
       if (!drugVal) return showToast("กรุณาระบุชื่อยา", "error");
       if (!lotVal) return showToast("กรุณาระบุ Lot Number", "error");
       if (!expVal) return showToast("กรุณาระบุวันหมดอายุ", "error");
       if (!qtyVal || qtyVal < 1) return showToast("จำนวนยาต้องมากกว่า 0", "error");
-      if (!slotVal) return showToast("กรุณาเลือกช่องเก็บยา (Slot)", "error");
+      if (!slotInputVal) return showToast("กรุณาระบุเลขช่องเก็บยา (Slot)", "error");
 
       try {
-        // แยกเอาเฉพาะรหัสยาจากที่เลือกใน dropdown ("CODE | NAME")
         const drugCode = drugVal.split('|')[0].trim();
+        
+        // แปลงเลขที่พิมพ์มา (เช่น "35") ให้เป็น format "slot_35" สำหรับเก็บใน inventory
+        const slotVal = `slot_${slotInputVal}`;
 
-        // สร้างข้อมูลที่จะเก็บ
         const stockData = {
           drugInfo: drugVal,
           drugCode: drugCode,
@@ -644,11 +657,11 @@
           timestamp: Date.now()
         };
 
-        // สร้างรายการใหม่ในโหนด cabinet_inventory/{slot_id}
+        // บันทึกลง cabinet_inventory ตามแนวทางเดิมของคุณ (ไม่กระทบจอ OLED)
         const newStockRef = push(ref(db, `cabinet_inventory/${slotVal}`));
         await set(newStockRef, stockData);
 
-        showToast(`นำยาเข้าช่อง ${slotVal} สำเร็จ จำนวน ${qtyVal} หน่วย!`, "success");
+        showToast(`นำยาเข้าช่อง ${slotInputVal} สำเร็จ!`, "success");
         
         // เคลียร์ฟอร์ม
         document.getElementById('drugInput').value = '';
@@ -659,7 +672,7 @@
 
       } catch (error) {
         console.error(error);
-        showToast("เกิดข้อผิดพลาดในการบันทึกตู้ยา", "error");
+        showToast("เกิดข้อผิดพลาดในการบันทึก", "error");
       }
     });
 
