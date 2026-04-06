@@ -446,15 +446,17 @@
     // ปรับแต่ง UI ด้วย JavaScript
     // ==========================================
 
-    // สร้าง Footer ใหม่โดยปรับฟอนต์ให้โมเดิร์นขึ้น (ไม่เอียง ใช้ฟอนต์ Outfit/Kanit)
+    // สร้าง Footer ใหม่โดยปรับฟอนต์ให้โมเดิร์นขึ้น (ฟอนต์ Cormorant Garamond, ตัวเอียง, สีขาว)
     const footer = document.createElement("footer");
-    footer.style.marginTop = "40px";
+    footer.style.marginTop = "35px";
     footer.style.textAlign = "center";
-    footer.style.fontFamily = "'Outfit', 'Kanit', sans-serif";
-    footer.style.fontWeight = "500";
-    footer.style.color = "#2c3e50"; 
+    footer.style.fontFamily = "'Cormorant Garamond', serif";
+    footer.style.fontStyle = "italic";
+    footer.style.fontWeight = "600";
+    footer.style.color = "#fff"; 
+    footer.style.textShadow = "0 1px 3px rgba(0,0,0,0.2)"; // เพิ่มเงาเพื่อให้ตัวหนังสือสีขาวลอยเด่นขึ้นจากพื้นหลังสว่าง
     footer.style.letterSpacing = "0.5px";
-    footer.style.opacity = "0.8";
+    footer.style.opacity = "0.9";
     footer.innerText = "Admin Dashboard • Smart Cabinet Project";
     document.body.appendChild(footer);
 
