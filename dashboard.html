@@ -619,8 +619,7 @@
                         <div class="search-wrap">
                             <i class="fas fa-search search-icon"></i>
                             <input type="text" id="medSearchInput" class="search-input"
-                                   placeholder="ค้นหาชื่อยา / ชื่อสามัญ / รูปแบบ / ขนาด / รหัสยา"
-                                   oninput="filterMedicineList()">
+                                   placeholder="ค้นหาชื่อยา / ชื่อสามัญ / รูปแบบ / ขนาด / รหัสยา">
                         </div>
 
                         <div id="medNoResultMessage" class="result-badge" style="display:none; color:#c0392b; border-color: rgba(231,76,60,0.25); background: rgba(231,76,60,0.08);">
@@ -818,28 +817,44 @@
         }
 
         window.filterMedicineList = function () {
-            const keyword = (document.getElementById('medSearchInput')?.value || '')
-                .trim()
-                .toLowerCase();
+    const keyword = (document.getElementById('medSearchInput')?.value || '')
+        .trim()
+        .toLowerCase();
 
-            const items = document.querySelectorAll('#medListManager .med-item');
-            const noResultMessage = document.getElementById('medNoResultMessage');
-            let visibleCount = 0;
+    const items = document.querySelectorAll('#medListManager .med-item');
+    const noResultMessage = document.getElementById('medNoResultMessage');
+    let visibleCount = 0;
 
-            items.forEach(item => {
-                const haystack = (item.getAttribute('data-search') || '')
-                    .toLowerCase();
+    items.forEach(item => {
+        const haystack = (item.getAttribute('data-search') || '').toLowerCase();
+        const matched = !keyword || haystack.includes(keyword);
 
-                const matched = !keyword || haystack.includes(keyword);
-                item.style.display = matched ? '' : 'none';
+        item.style.display = matched ? '' : 'none';
 
-                if (matched) visibleCount++;
-            });
+        if (matched) visibleCount++;
+    });
 
-            if (noResultMessage) {
-                noResultMessage.style.display = (keyword && visibleCount === 0) ? 'inline-block' : 'none';
-            }
-        };
+    if (noResultMessage) {
+        noResultMessage.style.display = (keyword && visibleCount === 0) ? 'inline-block' : 'none';
+    }
+};
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const medSearchInput = document.getElementById('medSearchInput');
+    if (medSearchInput) {
+        medSearchInput.addEventListener('input', window.filterMedicineList);
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+    const medSearchInput = document.getElementById('medSearchInput');
+    if (medSearchInput) {
+        medSearchInput.addEventListener('input', () => {
+            window.filterMedicineList();
+        });
+    }
+});
 
         window.deleteMedicine = function (key) {
             if (confirm("ต้องการลบยาออกหรือไม่?")) {
@@ -850,20 +865,24 @@
         };
 
         window.openManageMedList = function () {
-            const selectAll = document.getElementById('selectAllCheckbox');
-            const searchInput = document.getElementById('medSearchInput');
+    const selectAll = document.getElementById('selectAllCheckbox');
+    const searchInput = document.getElementById('medSearchInput');
 
-            if (selectAll) selectAll.checked = false;
-            if (searchInput) searchInput.value = '';
+    if (selectAll) selectAll.checked = false;
+    if (searchInput) searchInput.value = '';
 
-            new bootstrap.Modal(document.getElementById('manageMedModal')).show();
+    new bootstrap.Modal(document.getElementById('manageMedModal')).show();
 
-            setTimeout(() => {
-                filterMedicineList();
-                if (searchInput) searchInput.focus();
-            }, 200);
-        };
+    setTimeout(() => {
+        filterMedicineList();
 
+        if (searchInput) {
+            searchInput.focus();
+            searchInput.removeEventListener('input', window.filterMedicineList);
+            searchInput.addEventListener('input', window.filterMedicineList);
+        }
+    }, 200);
+};
         window.toggleSelectAll = function () {
             const isChecked = document.getElementById('selectAllCheckbox').checked;
             const items = document.querySelectorAll('#medListManager .med-item');
