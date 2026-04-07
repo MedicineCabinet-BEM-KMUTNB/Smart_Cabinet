@@ -589,7 +589,8 @@
         <div class="modal-dialog">
             <div class="modal-content glam-modal">
                 <div class="modal-header" style="border-bottom:none;">
-                    <h5 class="modal-title glam-modal-title">เลือกชื่อยา</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title glam-modal-title">เลือกชื่อยา</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
                     <label class="form-label mb-2" style="font-family:'Outfit';font-size:0.8rem;text-transform:uppercase;">Select from list</label>
@@ -614,19 +615,18 @@
                     <div class="manage-toolbar">
                         <input type="checkbox" id="selectAllCheckbox" class="form-check-input me-1" onchange="toggleSelectAll()">
                         <label for="selectAllCheckbox" class="form-label mb-0 small text-muted me-2">เลือกทั้งหมด</label>
-                    
+
                         <div class="search-wrap">
                             <i class="fas fa-search search-icon"></i>
                             <input type="text" id="medSearchInput" class="search-input"
                                    placeholder="ค้นหาชื่อยา / ชื่อสามัญ / รูปแบบ / ขนาด / รหัสยา"
                                    oninput="filterMedicineList()">
                         </div>
-                    
-                        <div id="medNoResultMessage" class="result-badge"
-                             style="display:none; color:#c0392b; border-color: rgba(231,76,60,0.25); background: rgba(231,76,60,0.08);">
-                             ไม่พบรายการยาที่ค้นหา
+
+                        <div id="medNoResultMessage" class="result-badge" style="display:none; color:#c0392b; border-color: rgba(231,76,60,0.25); background: rgba(231,76,60,0.08);">
+                            ไม่พบรายการยาที่ค้นหา
                         </div>
-                    
+
                         <button class="btn btn-sm btn-outline-primary ms-auto" onclick="prepareA4Print()" style="border-radius: 999px;">
                             <i class="fas fa-print"></i> พิมพ์ใบสั่งยาที่เลือก (A4)
                         </button>
@@ -735,10 +735,15 @@
         });
 
         window.logout = function () {
-            signOut(auth).then(() => { window.location.href = "index.html"; }).catch(() => { alert("Logout Failed"); });
+            signOut(auth).then(() => {
+                window.location.href = "index.html";
+            }).catch(() => {
+                alert("Logout Failed");
+            });
         };
 
         const medListRef = ref(db, 'drugs');
+
         function loadMedListFromFirebase() {
             onValue(medListRef, (snapshot) => {
                 const select = document.getElementById("medList");
@@ -753,6 +758,7 @@
                 if (snapshot.exists()) {
                     hasData = true;
                     const data = snapshot.val();
+
                     Object.keys(data).forEach((key) => {
                         const drugItem = data[key];
                         const drugName = drugItem.name ? drugItem.name : key;
@@ -765,7 +771,7 @@
 
                         const opt = document.createElement("option");
                         opt.value = drugName;
-                        let cleanName = drugName.split(' [รหัส:')[0];
+                        const cleanName = drugName.split(' [รหัส:')[0];
                         opt.textContent = cleanName;
                         select.appendChild(opt);
 
@@ -778,7 +784,10 @@
                         li.className = "list-group-item d-flex justify-content-between align-items-center mb-2 med-item";
                         li.style.background = "rgba(255,255,255,0.7)";
                         li.style.border = "none";
-                        li.setAttribute('data-search', `${cleanName} ${generic} ${form} ${strength} ${hospitalCode}`.toLowerCase());
+                        li.setAttribute(
+                            'data-search',
+                            `${cleanName} ${generic} ${form} ${strength} ${hospitalCode}`.toLowerCase()
+                        );
 
                         li.innerHTML = `
                             <div class="d-flex align-items-start" style="width: 100%;">
@@ -799,21 +808,31 @@
                         ul.appendChild(li);
                     });
                 }
-                if (!hasData) ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
+
+                if (!hasData) {
+                    ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
+                }
+
                 filterMedicineList();
             });
         }
 
         window.filterMedicineList = function () {
-            const keyword = (document.getElementById('medSearchInput')?.value || '').trim().toLowerCase();
+            const keyword = (document.getElementById('medSearchInput')?.value || '')
+                .trim()
+                .toLowerCase();
+
             const items = document.querySelectorAll('#medListManager .med-item');
             const noResultMessage = document.getElementById('medNoResultMessage');
             let visibleCount = 0;
 
             items.forEach(item => {
-                const haystack = item.getAttribute('data-search') || '';
+                const haystack = (item.getAttribute('data-search') || '')
+                    .toLowerCase();
+
                 const matched = !keyword || haystack.includes(keyword);
                 item.style.display = matched ? '' : 'none';
+
                 if (matched) visibleCount++;
             });
 
@@ -824,16 +843,21 @@
 
         window.deleteMedicine = function (key) {
             if (confirm("ต้องการลบยาออกหรือไม่?")) {
-                remove(ref(db, 'drugs/' + key)).catch(() => { alert("ลบไม่สำเร็จ"); });
+                remove(ref(db, 'drugs/' + key)).catch(() => {
+                    alert("ลบไม่สำเร็จ");
+                });
             }
         };
 
         window.openManageMedList = function () {
             const selectAll = document.getElementById('selectAllCheckbox');
             const searchInput = document.getElementById('medSearchInput');
+
             if (selectAll) selectAll.checked = false;
             if (searchInput) searchInput.value = '';
+
             new bootstrap.Modal(document.getElementById('manageMedModal')).show();
+
             setTimeout(() => {
                 filterMedicineList();
                 if (searchInput) searchInput.focus();
@@ -842,11 +866,12 @@
 
         window.toggleSelectAll = function () {
             const isChecked = document.getElementById('selectAllCheckbox').checked;
-            const checkboxes = document.querySelectorAll('.med-item:not([style*="display: none"]) .med-checkbox, .med-item .med-checkbox');
-            checkboxes.forEach(cb => {
-                const item = cb.closest('.med-item');
-                if (item && item.style.display !== 'none') {
-                    cb.checked = isChecked;
+            const items = document.querySelectorAll('#medListManager .med-item');
+
+            items.forEach(item => {
+                if (item.style.display !== 'none') {
+                    const cb = item.querySelector('.med-checkbox');
+                    if (cb) cb.checked = isChecked;
                 }
             });
         };
@@ -857,12 +882,14 @@
                 alert("กรุณาเลือกรายการยาที่ต้องการลบอย่างน้อย 1 รายการ");
                 return;
             }
+
             if (confirm(`⚠️ ยืนยันการลบยา ${checkedBoxes.length} รายการที่เลือก? \n(ไม่สามารถกู้คืนได้)`)) {
                 checkedBoxes.forEach(cb => {
                     const keyToDelete = cb.value;
                     remove(ref(db, 'drugs/' + keyToDelete))
                         .catch(err => console.error("Error deleting " + keyToDelete, err));
                 });
+
                 document.getElementById('selectAllCheckbox').checked = false;
             }
         };
@@ -882,14 +909,15 @@
         function renderSlots() {
             const container = document.getElementById("slotContainer");
             container.innerHTML = "";
+
             globalSlots.forEach((s, index) => {
                 const filled = s.name !== "Empty Slot";
                 const displayNum = String(index + 1).padStart(2, '0');
                 const createdTime = s.createdAt ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${s.createdAt}</div>` : '';
                 const editorInfo = s.editedBy ? `<div class="user-edit-badge" title="Last edited by ${s.editedBy}"><i class="fas fa-user-edit me-1"></i> ${s.editedBy}</div>` : '';
 
-                let detailHtml = `<div class="med-detail">${s.detail}</div>`;
-                let cleanSlotName = s.name.split(' [รหัส:')[0];
+                const detailHtml = `<div class="med-detail">${s.detail}</div>`;
+                const cleanSlotName = s.name.split(' [รหัส:')[0];
 
                 const cardHTML = `
                   <div class="col-md-6">
@@ -912,15 +940,24 @@
         }
 
         window.saveToFirebase = function () {
-            globalSlots.forEach((item, index) => { if (item) item.slot = index + 1; });
-            set(ref(db, "slots"), globalSlots).catch(() => { alert("บันทึกไม่สำเร็จ"); });
+            globalSlots.forEach((item, index) => {
+                if (item) item.slot = index + 1;
+            });
+            set(ref(db, "slots"), globalSlots).catch(() => {
+                alert("บันทึกไม่สำเร็จ");
+            });
         };
 
         window.addSlot = function () {
             const now = new Date().toLocaleString('en-GB', {
-                day: 'numeric', month: 'short', year: 'numeric',
-                hour: '2-digit', minute: '2-digit', hour12: false
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
             });
+
             globalSlots.push({
                 slot: globalSlots.length + 1,
                 name: "Empty Slot",
@@ -929,6 +966,7 @@
                 editedBy: currentUserName,
                 hospitalCode: ""
             });
+
             saveToFirebase();
         };
 
@@ -989,12 +1027,18 @@
                 }
 
                 globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', {
-                    day: 'numeric', month: 'short', year: 'numeric',
-                    hour: '2-digit', minute: '2-digit', hour12: false
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
                 });
+
                 globalSlots[currentSlotIndex].editedBy = currentUserName;
                 saveToFirebase();
             }
+
             bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
         };
 
