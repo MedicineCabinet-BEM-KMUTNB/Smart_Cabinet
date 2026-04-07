@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,15 +7,12 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,600&family=Kanit:wght@300;400;500&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* ================= CSS Styles ================= */
         :root {
             --phyathai-light-green: #2f6f5e;
             --card-bg: rgba(255, 255, 255, 0.95);
@@ -42,17 +38,9 @@
         }
 
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body::before {
@@ -401,17 +389,63 @@
             white-space: nowrap;
         }
 
-        /* ================= CSS สำหรับการสั่งปริ้นแบบ A4 (Layout 6 ยาต่อหน้า) ================= */
+        .manage-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 0 12px 12px 12px;
+            border-bottom: 1px solid rgba(0,0,0,0.08);
+            flex-wrap: wrap;
+        }
+
+        .search-wrap {
+            position: relative;
+            flex: 1 1 280px;
+            min-width: 240px;
+        }
+
+        .search-input {
+            width: 100%;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.7);
+            padding: 10px 16px 10px 42px;
+            outline: none;
+            font-family: 'Kanit', sans-serif;
+            font-size: 0.95rem;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+        }
+
+        .search-input:focus {
+            border-color: rgba(116,185,255,0.9);
+            box-shadow: 0 0 0 3px rgba(116,185,255,0.18);
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .result-badge {
+            font-size: 0.82rem;
+            color: #636e72;
+            background: rgba(255,255,255,0.65);
+            border: 1px solid rgba(255,255,255,0.85);
+            padding: 8px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+        }
+
         @media print {
-            body * {
-                visibility: hidden;
-            }
-
+            body * { visibility: hidden; }
             body.printing-a4 #printA4Container,
-            body.printing-a4 #printA4Container * {
-                visibility: visible;
-            }
-
+            body.printing-a4 #printA4Container * { visibility: visible; }
             body.printing-a4 #printA4Container {
                 position: absolute;
                 left: 0;
@@ -421,12 +455,8 @@
                 padding: 0;
                 background: white;
             }
-
             .btn-close,
-            .modal-footer {
-                display: none !important;
-            }
-
+            .modal-footer { display: none !important; }
             .a4-page {
                 width: 210mm;
                 height: 296mm;
@@ -439,7 +469,6 @@
                 background: white;
                 page-break-after: always;
             }
-
             .print-cell {
                 border: 1px dashed #aaa;
                 display: flex;
@@ -451,7 +480,6 @@
                 overflow: hidden;
                 font-family: 'Kanit', sans-serif;
             }
-
             .print-header-row {
                 display: flex;
                 justify-content: space-between;
@@ -459,28 +487,19 @@
                 width: 100%;
                 margin-bottom: 5px;
             }
-
             .print-info-left {
                 font-size: 0.8rem;
                 color: #333;
                 line-height: 1.4;
                 text-align: left;
             }
-
             .print-info-left strong {
                 font-weight: 600;
                 color: var(--phyathai-light-green);
                 font-size: 0.95rem;
             }
-
-            .qrcode-container {
-                margin: 0;
-            }
-
-            .qrcode-container img {
-                display: block;
-            }
-
+            .qrcode-container { margin: 0; }
+            .qrcode-container img { display: block; }
             .print-med-box {
                 border: 2px solid #333;
                 padding: 8px;
@@ -494,14 +513,12 @@
                 align-items: center;
                 justify-content: center;
             }
-
             .print-med-name {
                 font-weight: bold;
                 font-size: 1.25rem;
                 margin: 0;
                 word-break: break-word;
             }
-
             .print-barcode-container {
                 text-align: center;
                 width: 100%;
@@ -510,7 +527,6 @@
                 box-sizing: border-box;
                 overflow: hidden;
             }
-
             .print-barcode-container svg {
                 max-width: 100%;
                 height: auto;
@@ -519,21 +535,11 @@
             }
         }
 
-        #selectMedModal .modal-content {
-            overflow: visible !important;
-        }
-
-        #selectMedModal .modal-body {
-            overflow: visible !important;
-        }
-
-        #selectMedModal select {
-            position: relative;
-            z-index: 9999;
-        }
+        #selectMedModal .modal-content,
+        #selectMedModal .modal-body { overflow: visible !important; }
+        #selectMedModal select { position: relative; z-index: 9999; }
     </style>
 </head>
-
 <body>
     <div class="text-center mb-3 mt-4">
         <h1 class="header-title display-3">Medicine Cabinet</h1>
@@ -568,8 +574,7 @@
     </div>
 
     <div class="container" style="max-width: 900px;">
-        <div class="row g-4" id="slotContainer">
-        </div>
+        <div class="row g-4" id="slotContainer"></div>
 
         <div class="d-flex justify-content-center gap-4 mt-5">
             <button class="btn btn-glam-primary rounded-pill px-4" onclick="addSlot()">
@@ -584,12 +589,10 @@
         <div class="modal-dialog">
             <div class="modal-content glam-modal">
                 <div class="modal-header" style="border-bottom:none;">
-                    <h5 class="modal-title glam-modal-title">เลือกชื่อยา</h5><button type="button" class="btn-close"
-                        data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title glam-modal-title">เลือกชื่อยา</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label mb-2"
-                        style="font-family:'Outfit';font-size:0.8rem;text-transform:uppercase;">Select from list</label>
+                    <label class="form-label mb-2" style="font-family:'Outfit';font-size:0.8rem;text-transform:uppercase;">Select from list</label>
                     <select id="medList" class="form-select glam-select"></select>
                 </div>
                 <div class="modal-footer" style="border-top:none;">
@@ -608,13 +611,23 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="d-flex align-items-center mb-2 px-3 pb-2 border-bottom">
-                        <input type="checkbox" id="selectAllCheckbox" class="form-check-input me-2"
-                            onchange="toggleSelectAll()">
-                        <label for="selectAllCheckbox" class="form-label mb-0 small text-muted">เลือกทั้งหมด</label>
-
-                        <button class="btn btn-sm btn-outline-primary ms-auto" onclick="prepareA4Print()"
-                            style="border-radius: 999px;">
+                    <div class="manage-toolbar">
+                        <input type="checkbox" id="selectAllCheckbox" class="form-check-input me-1" onchange="toggleSelectAll()">
+                        <label for="selectAllCheckbox" class="form-label mb-0 small text-muted me-2">เลือกทั้งหมด</label>
+                    
+                        <div class="search-wrap">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="medSearchInput" class="search-input"
+                                   placeholder="ค้นหาชื่อยา / ชื่อสามัญ / รูปแบบ / ขนาด / รหัสยา"
+                                   oninput="filterMedicineList()">
+                        </div>
+                    
+                        <div id="medNoResultMessage" class="result-badge"
+                             style="display:none; color:#c0392b; border-color: rgba(231,76,60,0.25); background: rgba(231,76,60,0.08);">
+                             ไม่พบรายการยาที่ค้นหา
+                        </div>
+                    
+                        <button class="btn btn-sm btn-outline-primary ms-auto" onclick="prepareA4Print()" style="border-radius: 999px;">
                             <i class="fas fa-print"></i> พิมพ์ใบสั่งยาที่เลือก (A4)
                         </button>
                     </div>
@@ -670,7 +683,6 @@
 
         function getBarcodeOptions(code) {
             const len = (code || "").length;
-
             let width = 1.8 - ((len - 8) * 0.05);
             if (width > 1.8) width = 1.8;
             if (width < 0.75) width = 0.75;
@@ -760,33 +772,55 @@
                         const generic = drugItem.genericName || '-';
                         const form = drugItem.dosageForm || '-';
                         const strength = drugItem.strength || '-';
+                        const hospitalCode = drugItem.hospitalCode || key;
 
                         const li = document.createElement("li");
-                        li.className = "list-group-item d-flex justify-content-between align-items-center mb-2";
+                        li.className = "list-group-item d-flex justify-content-between align-items-center mb-2 med-item";
                         li.style.background = "rgba(255,255,255,0.7)";
                         li.style.border = "none";
+                        li.setAttribute('data-search', `${cleanName} ${generic} ${form} ${strength} ${hospitalCode}`.toLowerCase());
 
                         li.innerHTML = `
-                      <div class="d-flex align-items-start" style="width: 100%;">
-                          <input type="checkbox" class="med-checkbox form-check-input mt-1 me-3" value="${key}">
-                          <div class="flex-grow-1">
-                              <div class="fw-bold text-primary mb-0">${cleanName}</div>
-                              <div class="text-secondary small fst-italic mb-1">${generic}</div>
-                              <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
-                                  <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
-                                  <span class="d-inline-block me-2 border rounded px-1 bg-light">ขนาด: ${strength}</span>
-                              </div>
-                          </div>
-                      </div>
-                      <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteMedicine('${key}')" title="ลบรายการนี้">
-                          <i class="fas fa-trash"></i>
-                      </button>`;
+                            <div class="d-flex align-items-start" style="width: 100%;">
+                                <input type="checkbox" class="med-checkbox form-check-input mt-1 me-3" value="${key}">
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold text-primary mb-0">${cleanName}</div>
+                                    <div class="text-secondary small fst-italic mb-1">${generic}</div>
+                                    <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
+                                        <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
+                                        <span class="d-inline-block me-2 border rounded px-1 bg-light">ขนาด: ${strength}</span>
+                                        <span class="d-inline-block me-2 border rounded px-1 bg-light">รหัส: ${hospitalCode}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-outline-danger ms-2" onclick="deleteMedicine('${key}')" title="ลบรายการนี้">
+                                <i class="fas fa-trash"></i>
+                            </button>`;
                         ul.appendChild(li);
                     });
                 }
                 if (!hasData) ul.innerHTML = '<li class="list-group-item text-center text-muted">ไม่พบข้อมูลยา</li>';
+                filterMedicineList();
             });
         }
+
+        window.filterMedicineList = function () {
+            const keyword = (document.getElementById('medSearchInput')?.value || '').trim().toLowerCase();
+            const items = document.querySelectorAll('#medListManager .med-item');
+            const noResultMessage = document.getElementById('medNoResultMessage');
+            let visibleCount = 0;
+
+            items.forEach(item => {
+                const haystack = item.getAttribute('data-search') || '';
+                const matched = !keyword || haystack.includes(keyword);
+                item.style.display = matched ? '' : 'none';
+                if (matched) visibleCount++;
+            });
+
+            if (noResultMessage) {
+                noResultMessage.style.display = (keyword && visibleCount === 0) ? 'inline-block' : 'none';
+            }
+        };
 
         window.deleteMedicine = function (key) {
             if (confirm("ต้องการลบยาออกหรือไม่?")) {
@@ -796,17 +830,26 @@
 
         window.openManageMedList = function () {
             const selectAll = document.getElementById('selectAllCheckbox');
+            const searchInput = document.getElementById('medSearchInput');
             if (selectAll) selectAll.checked = false;
+            if (searchInput) searchInput.value = '';
             new bootstrap.Modal(document.getElementById('manageMedModal')).show();
+            setTimeout(() => {
+                filterMedicineList();
+                if (searchInput) searchInput.focus();
+            }, 200);
         };
 
         window.toggleSelectAll = function () {
             const isChecked = document.getElementById('selectAllCheckbox').checked;
-            const checkboxes = document.querySelectorAll('.med-checkbox');
+            const checkboxes = document.querySelectorAll('.med-item:not([style*="display: none"]) .med-checkbox, .med-item .med-checkbox');
             checkboxes.forEach(cb => {
-                cb.checked = isChecked;
+                const item = cb.closest('.med-item');
+                if (item && item.style.display !== 'none') {
+                    cb.checked = isChecked;
+                }
             });
-        }
+        };
 
         window.deleteSelectedMedicines = function () {
             const checkedBoxes = document.querySelectorAll('.med-checkbox:checked');
@@ -822,7 +865,7 @@
                 });
                 document.getElementById('selectAllCheckbox').checked = false;
             }
-        }
+        };
 
         function loadSlotsFromFirebase() {
             onValue(ref(db, "slots"), (snapshot) => {
@@ -871,7 +914,7 @@
         window.saveToFirebase = function () {
             globalSlots.forEach((item, index) => { if (item) item.slot = index + 1; });
             set(ref(db, "slots"), globalSlots).catch(() => { alert("บันทึกไม่สำเร็จ"); });
-        }
+        };
 
         window.addSlot = function () {
             const now = new Date().toLocaleString('en-GB', {
@@ -1048,5 +1091,4 @@
         };
     </script>
 </body>
-
 </html>
