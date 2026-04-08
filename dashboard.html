@@ -648,7 +648,7 @@
         const db = getDatabase(app);
         const auth = getAuth(app);
 
-        let globalSlots = [];
+        let slotsData = [];
         let currentSlotIndex = null;
         let currentUserName = "Loading...";
         let medDataMap = {};
@@ -684,15 +684,70 @@
             };
         }
 
-        function saveToFirebase() {
-            globalSlots.forEach((item, index) => {
-                if (item) item.slot = index + 1;
-            });
-            set(ref(db, "slots"), globalSlots).catch(() => {
+        function saveSlotsToFirebase() {
+            const normalizedSlots = slotsData.map((slot, index) => ({
+                ...slot,
+                slot: index + 1
+            }));
+
+            slotsData = normalizedSlots;
+            set(ref(db, "slots"), normalizedSlots).catch(() => {
                 alert("บันทึกไม่สำเร็จ");
             });
         }
-        window.saveToFirebase = saveToFirebase;
+
+        function loadSlotsFromFirebase() {
+            onValue(ref(db, "slots"), (snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    slotsData = Array.isArray(data)
+                        ? data.filter(item => item !== null)
+                        : Object.values(data);
+                } else {
+                    slotsData = [];
+                }
+                renderSlots();
+            });
+        }
+
+        function renderSlots() {
+            const container = document.getElementById("slotContainer");
+            container.innerHTML = "";
+
+            slotsData.forEach((slotItem, index) => {
+                const filled = slotItem.name !== "Empty Slot";
+                const displayNum = String(index + 1).padStart(2, '0');
+                const createdTime = slotItem.createdAt
+                    ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${slotItem.createdAt}</div>`
+                    : '';
+                const editorInfo = slotItem.editedBy
+                    ? `<div class="user-edit-badge" title="Last edited by ${slotItem.editedBy}"><i class="fas fa-user-edit me-1"></i> ${slotItem.editedBy}</div>`
+                    : '';
+
+                const detailHtml = `<div class="med-detail">${slotItem.detail || '-'}</div>`;
+                const cleanSlotName = (slotItem.name || '').split(' [รหัส:')[0];
+
+                const cardHTML = `
+                    <div class="col-md-6">
+                        <div class="medicine-card" id="card-${index}" style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}">
+                            <div class="btn-fab-delete" onclick="deleteSlot(${index})" title="ลบ Slot นี้"><i class="fas fa-trash"></i></div>
+                            <div class="slot-badge-label" style="${filled ? "" : "background:#95a5a6;"}">SLOT ${displayNum}</div>
+                            <div class="slot-indicator">${displayNum}</div>
+                            <div class="card-content">
+                                <div class="med-name" style="${filled ? "" : "color:#95a5a6;font-style:italic;"}">${cleanSlotName}</div>
+                                ${detailHtml}
+                                ${createdTime}
+                                ${editorInfo}
+                            </div>
+                            <button class="btn-fab ${filled ? "" : "btn-fab-add"}" onclick="editMedicine(${index})">
+                                <i class="fas ${filled ? "fa-pen" : "fa-plus"}"></i>
+                            </button>
+                        </div>
+                    </div>`;
+
+                container.insertAdjacentHTML('beforeend', cardHTML);
+            });
+        }
 
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -706,9 +761,11 @@
                     } else {
                         displayName = user.email;
                     }
+
                     currentUserName = displayName;
                     document.getElementById("currentUserDisplay").innerHTML =
                         `<span style="font-family: 'Kanit', sans-serif;"><i class="fas fa-user-circle me-1"></i> ผู้ใช้งาน: <strong>${currentUserName}</strong></span>`;
+
                     loadSlotsFromFirebase();
                     loadMedListFromFirebase();
                 }).catch(() => {
@@ -760,7 +817,7 @@
 
                         const opt = document.createElement("option");
                         opt.value = drugName;
-                        let cleanName = drugName.split(' [รหัส:')[0];
+                        const cleanName = drugName.split(' [รหัส:')[0];
                         opt.textContent = cleanName;
                         select.appendChild(opt);
 
@@ -837,56 +894,6 @@
             }
         };
 
-        function loadSlotsFromFirebase() {
-            onValue(ref(db, "slots"), (snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    globalSlots = Array.isArray(data) ? data.filter(x => x !== null) : Object.values(data);
-                } else {
-                    globalSlots = [];
-                }
-                renderSlots();
-            });
-        }
-
-        function renderSlots() {
-            const container = document.getElementById("slotContainer");
-            container.innerHTML = "";
-
-            globalSlots.forEach((s, index) => {
-                const filled = s.name !== "Empty Slot";
-                const displayNum = String(index + 1).padStart(2, '0');
-                const createdTime = s.createdAt
-                    ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${s.createdAt}</div>`
-                    : '';
-                const editorInfo = s.editedBy
-                    ? `<div class="user-edit-badge" title="Last edited by ${s.editedBy}"><i class="fas fa-user-edit me-1"></i> ${s.editedBy}</div>`
-                    : '';
-
-                let detailHtml = `<div class="med-detail">${s.detail}</div>`;
-                let cleanSlotName = s.name.split(' [รหัส:')[0];
-
-                const cardHTML = `
-                    <div class="col-md-6">
-                        <div class="medicine-card" id="card-${index}" style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}">
-                            <div class="btn-fab-delete" onclick="deleteSpecificSlot(${index})" title="ลบ Slot นี้"><i class="fas fa-trash"></i></div>
-                            <div class="slot-badge-label" style="${filled ? "" : "background:#95a5a6;"}">SLOT ${displayNum}</div>
-                            <div class="slot-indicator">${displayNum}</div>
-                            <div class="card-content">
-                                <div class="med-name" style="${filled ? "" : "color:#95a5a6;font-style:italic;"}">${cleanSlotName}</div>
-                                ${detailHtml}
-                                ${createdTime}
-                                ${editorInfo}
-                            </div>
-                            <button class="btn-fab ${filled ? "" : "btn-fab-add"}" onclick="editMedicine(${index})">
-                                <i class="fas ${filled ? "fa-pen" : "fa-plus"}"></i>
-                            </button>
-                        </div>
-                    </div>`;
-                container.insertAdjacentHTML('beforeend', cardHTML);
-            });
-        }
-
         window.addSlot = function () {
             const now = new Date().toLocaleString('en-GB', {
                 day: 'numeric',
@@ -897,8 +904,8 @@
                 hour12: false
             });
 
-            globalSlots.push({
-                slot: globalSlots.length + 1,
+            slotsData.push({
+                slot: slotsData.length + 1,
                 name: "Empty Slot",
                 detail: "Available for new item",
                 createdAt: now,
@@ -906,20 +913,15 @@
                 hospitalCode: ""
             });
 
-            saveToFirebase();
+            renderSlots();
+            saveSlotsToFirebase();
         };
 
-        window.removeLastSlot = function () {
-            if (globalSlots.length > 0) {
-                globalSlots.pop();
-                saveToFirebase();
-            }
-        };
-
-        window.deleteSpecificSlot = function (index) {
+        window.deleteSlot = function (index) {
             if (confirm("ต้องการลบ Slot นี้?")) {
-                globalSlots.splice(index, 1);
-                saveToFirebase();
+                slotsData.splice(index, 1);
+                renderSlots();
+                saveSlotsToFirebase();
             }
         };
 
@@ -932,18 +934,17 @@
             const selectedName = document.getElementById("medList").value;
             const drugInfo = medDataMap[selectedName];
 
-            if (globalSlots[currentSlotIndex]) {
-                globalSlots[currentSlotIndex].name = selectedName;
+            if (slotsData[currentSlotIndex]) {
+                slotsData[currentSlotIndex].name = selectedName;
 
                 if (drugInfo) {
                     const generic = drugInfo.genericName || '-';
                     const form = drugInfo.dosageForm || '-';
                     const strength = drugInfo.strength || '-';
 
-                    globalSlots[currentSlotIndex].hospitalCode = drugInfo.hospitalCode || drugInfo.code || '';
-                    globalSlots[currentSlotIndex].tradeName = drugInfo.tradeName || selectedName;
-
-                    globalSlots[currentSlotIndex].detail = `
+                    slotsData[currentSlotIndex].hospitalCode = drugInfo.hospitalCode || drugInfo.code || '';
+                    slotsData[currentSlotIndex].tradeName = drugInfo.tradeName || selectedName;
+                    slotsData[currentSlotIndex].detail = `
                         <div class="med-detail-list">
                             <div class="med-detail-row">
                                 <span class="med-detail-label">ชื่อสามัญ:</span>
@@ -960,12 +961,12 @@
                         </div>
                     `;
                 } else {
-                    globalSlots[currentSlotIndex].hospitalCode = '';
-                    globalSlots[currentSlotIndex].tradeName = '';
-                    globalSlots[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
+                    slotsData[currentSlotIndex].hospitalCode = '';
+                    slotsData[currentSlotIndex].tradeName = '';
+                    slotsData[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
                 }
 
-                globalSlots[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', {
+                slotsData[currentSlotIndex].createdAt = new Date().toLocaleString('en-GB', {
                     day: 'numeric',
                     month: 'short',
                     year: 'numeric',
@@ -973,8 +974,10 @@
                     minute: '2-digit',
                     hour12: false
                 });
-                globalSlots[currentSlotIndex].editedBy = currentUserName;
-                saveToFirebase();
+                slotsData[currentSlotIndex].editedBy = currentUserName;
+
+                renderSlots();
+                saveSlotsToFirebase();
             }
 
             bootstrap.Modal.getInstance(document.getElementById('selectMedModal')).hide();
