@@ -813,6 +813,10 @@
                             drugItem.hospitalCode = key;
                         }
 
+                        if (!drugItem.TPUCode) {
+                            drugItem.TPUCode = "";
+                        }
+
                         medDataMap[drugName] = drugItem;
 
                         const opt = document.createElement("option");
@@ -824,6 +828,7 @@
                         const generic = drugItem.genericName || '-';
                         const form = drugItem.dosageForm || '-';
                         const strength = drugItem.strength || '-';
+                        const tpuCode = drugItem.TPUCode || '-';
 
                         const li = document.createElement("li");
                         li.className = "list-group-item d-flex justify-content-between align-items-center mb-2";
@@ -839,6 +844,7 @@
                                     <div class="text-muted small" style="font-size: 0.8rem; line-height: 1.5;">
                                         <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
                                         <span class="d-inline-block me-2 border rounded px-1 bg-light">ขนาด: ${strength}</span>
+                                        <span class="d-inline-block me-2 border rounded px-1 bg-light">TPU: ${tpuCode}</span>
                                     </div>
                                 </div>
                             </div>
@@ -910,7 +916,12 @@
                 detail: "Available for new item",
                 createdAt: now,
                 editedBy: currentUserName,
-                hospitalCode: ""
+                hospitalCode: "",
+                TPUCode: "",
+                tradeName: "",
+                genericName: "",
+                dosageForm: "",
+                strength: ""
             });
 
             renderSlots();
@@ -941,28 +952,38 @@
                     const generic = drugInfo.genericName || '-';
                     const form = drugInfo.dosageForm || '-';
                     const strength = drugInfo.strength || '-';
+                    const tpuCode = drugInfo.TPUCode || '';
 
                     slotsData[currentSlotIndex].hospitalCode = drugInfo.hospitalCode || drugInfo.code || '';
+                    slotsData[currentSlotIndex].TPUCode = tpuCode;
                     slotsData[currentSlotIndex].tradeName = drugInfo.tradeName || selectedName;
+                    slotsData[currentSlotIndex].genericName = generic;
+                    slotsData[currentSlotIndex].dosageForm = form;
+                    slotsData[currentSlotIndex].strength = strength;
+
                     slotsData[currentSlotIndex].detail = `
-                        <div class="med-detail-list">
-                            <div class="med-detail-row">
-                                <span class="med-detail-label">ชื่อสามัญ:</span>
-                                <span class="med-detail-value" style="font-style:italic;">${generic}</span>
-                            </div>
-                            <div class="med-detail-row">
-                                <span class="med-detail-label">รูปแบบ:</span>
-                                <span class="med-detail-value">${form}</span>
-                            </div>
-                            <div class="med-detail-row">
-                                <span class="med-detail-label">ขนาด:</span>
-                                <span class="med-detail-value">${strength}</span>
-                            </div>
-                        </div>
-                    `;
+    <div class="med-detail-list">
+        <div class="med-detail-row">
+            <span class="med-detail-label">ชื่อสามัญ:</span>
+            <span class="med-detail-value" style="font-style:italic;">${generic}</span>
+        </div>
+        <div class="med-detail-row">
+            <span class="med-detail-label">รูปแบบ:</span>
+            <span class="med-detail-value">${form}</span>
+        </div>
+        <div class="med-detail-row">
+            <span class="med-detail-label">ขนาด:</span>
+            <span class="med-detail-value">${strength}</span>
+        </div>
+    </div>
+`;
                 } else {
                     slotsData[currentSlotIndex].hospitalCode = '';
+                    slotsData[currentSlotIndex].TPUCode = '';
                     slotsData[currentSlotIndex].tradeName = '';
+                    slotsData[currentSlotIndex].genericName = '';
+                    slotsData[currentSlotIndex].dosageForm = '';
+                    slotsData[currentSlotIndex].strength = '';
                     slotsData[currentSlotIndex].detail = '<span class="text-success small">● Ready to dispense</span>';
                 }
 
