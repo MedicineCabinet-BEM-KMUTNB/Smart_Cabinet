@@ -211,9 +211,9 @@
     });
 
     function updateHospitalCode() {
-      const getShort = (id) => {
-        return document.getElementById(id).value.trim().substring(0, 2).toUpperCase();
-      };
+        const getShort = (id) => {
+  return document.getElementById(id).value.trim().substring(0, 2).toUpperCase();
+};
 
       const trade = getShort("tradeName");
       const generic = getShort("genericName");
@@ -221,7 +221,7 @@
       const strength = document.getElementById("strength").value.trim().replace(/\s+/g, "");
 
       if (trade && generic && dosage && strength) {
-        const code = `${trade}${generic}-${dosage}-${strength}`.toUpperCase();
+        const code = `${trade}${generic}-${dosage}-${strength}`;
         document.getElementById("generatedCode").textContent = code;
         return code;
       }
