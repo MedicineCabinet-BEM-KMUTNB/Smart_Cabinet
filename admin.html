@@ -332,9 +332,7 @@
 
       <div class="top-actions">
         <!-- ปุ่มไปหน้าจัดการคลังยา -->
-        <button class="btn btn-purple" onclick="window.location.href='inventory.html'">
-          <i class="fa-solid fa-boxes-stacked"></i> จัดการคลังยา
-        </button>
+     
         <button class="btn btn-dark" onclick="window.location.href='dashboard.html'">
           <i class="fa-solid fa-table-columns"></i> ไปหน้าหลัก
         </button>
@@ -396,7 +394,6 @@
               <th class="sortable" data-sort="email">Email <i class="fa-solid fa-sort sort-icon"></i></th>
               <th class="sortable" data-sort="role">Role <i class="fa-solid fa-sort sort-icon"></i></th>
               <th class="sortable" data-sort="approval">Approval <i class="fa-solid fa-sort sort-icon"></i></th>
-              <th class="sortable active" data-sort="createdAt">วันที่สมัคร <i class="fa-solid fa-sort-down sort-icon"></i></th>
               <th style="width:320px;">การจัดการ</th>
             </tr>
           </thead>
@@ -510,7 +507,7 @@
 
     // Sorting State
     let sortCol = "createdAt";
-    let sortDesc = true;
+    let sortDesc = false;
 
     function formatDate(timestamp) {
       if (!timestamp) return "-";
@@ -614,7 +611,6 @@
                 : '<span class="badge badge-pending">รออนุมัติ</span>'
             }
           </td>
-          <td>${formatDate(user.createdAt)}</td>
           <td>
             <div class="actions">
               <button class="btn btn-green approve-btn" data-username="${escapeHtml(user.username)}">
