@@ -43,17 +43,9 @@
         }
 
         @keyframes gradientBG {
-            0% {
-                background-position: 0% 50%;
-            }
-
-            50% {
-                background-position: 100% 50%;
-            }
-
-            100% {
-                background-position: 0% 50%;
-            }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body::before {
@@ -166,22 +158,20 @@
         }
 
         .change-alert-badge {
-    position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-
-    background: rgba(231, 76, 60, 0.10);
-    color: #c0392b;
-    border: 1px solid rgba(231, 76, 60, 0.35);
-
-    border-radius: 999px;
-    padding: 4px 12px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    white-space: nowrap;
-}
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            background: rgba(231, 76, 60, 0.10);
+            color: #c0392b;
+            border: 1px solid rgba(231, 76, 60, 0.35);
+            border-radius: 999px;
+            padding: 4px 12px;
+            font-size: 0.72rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
 
         .card-content {
             z-index: 1;
@@ -254,7 +244,7 @@
             border-radius: 12px;
             padding: 10px 12px;
             margin: 12px auto 0;
-            text-align:left;;
+            text-align: left;
             font-size: 0.8rem;
             color: #6c4f00;
             width: 100%;
@@ -278,26 +268,26 @@
         }
 
         .btn-fab {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    border: none;
-    background: #f1f2f6;
-    color: #2f3542;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.2s;
-    cursor: pointer;
-    z-index: 5;
-    position: absolute;
-    bottom: 8px;
-    right: 16px;
-}
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f2f6;
+            color: #2f3542;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            cursor: pointer;
+            z-index: 5;
+            position: absolute;
+            bottom: 8px;
+            right: 16px;
+        }
 
-.btn-fab i {
-    font-size: 1rem;
-}
+        .btn-fab i {
+            font-size: 1rem;
+        }
 
         .btn-fab:hover {
             background: var(--accent-orange);
@@ -922,15 +912,28 @@
                 genericName: slot?.genericName || "",
                 dosageForm: slot?.dosageForm || "",
                 strength: slot?.strength || "",
+
                 previousDrugName: slot?.previousDrugName || "",
                 previousHospitalCode: slot?.previousHospitalCode || "",
+
                 changeDetected: !!slot?.changeDetected,
                 changeAcknowledged: slot?.changeAcknowledged !== undefined ? !!slot.changeAcknowledged : true,
                 lastChangedAt: slot?.lastChangedAt || "",
                 lastChangedBy: slot?.lastChangedBy || "",
                 lastChangedByRole: slot?.lastChangedByRole || "",
                 acknowledgedBy: slot?.acknowledgedBy || "",
-                acknowledgedAt: slot?.acknowledgedAt || ""
+                acknowledgedAt: slot?.acknowledgedAt || "",
+
+                pendingDrugName: slot?.pendingDrugName || "",
+                pendingHospitalCode: slot?.pendingHospitalCode || "",
+                pendingTradeName: slot?.pendingTradeName || "",
+                pendingGenericName: slot?.pendingGenericName || "",
+                pendingDosageForm: slot?.pendingDosageForm || "",
+                pendingStrength: slot?.pendingStrength || "",
+                pendingDetail: slot?.pendingDetail || "",
+                pendingChangedBy: slot?.pendingChangedBy || "",
+                pendingChangedByRole: slot?.pendingChangedByRole || "",
+                pendingChangedAt: slot?.pendingChangedAt || ""
             };
         }
 
@@ -949,7 +952,7 @@
             });
         }
 
-        function buildDrugDetailHtml(drugInfo, selectedName) {
+        function buildDrugDetailHtml(drugInfo) {
             if (!drugInfo) {
                 return '<span class="text-success small">● Ready to dispense</span>';
             }
@@ -976,49 +979,89 @@
             `;
         }
 
-        function createUpdatedSlot(baseSlot, selectedName, drugInfo, isChangedDrug) {
+        function createInitialSlotUpdate(baseSlot, selectedName, drugInfo) {
             const now = getNowDisplay();
-            const oldName = baseSlot?.name || "";
-            const oldHospitalCode = baseSlot?.hospitalCode || "";
-            const generic = drugInfo?.genericName || '';
-            const form = drugInfo?.dosageForm || '';
-            const strength = drugInfo?.strength || '';
-
             return {
                 ...baseSlot,
                 name: selectedName,
                 hospitalCode: drugInfo?.hospitalCode || drugInfo?.code || '',
                 tradeName: drugInfo?.tradeName || selectedName || '',
-                genericName: generic,
-                dosageForm: form,
-                strength: strength,
-                detail: buildDrugDetailHtml(drugInfo, selectedName),
+                genericName: drugInfo?.genericName || '',
+                dosageForm: drugInfo?.dosageForm || '',
+                strength: drugInfo?.strength || '',
+                detail: buildDrugDetailHtml(drugInfo),
                 createdAt: now,
                 editedBy: currentUserName,
-                previousDrugName: isChangedDrug ? oldName : (baseSlot?.previousDrugName || ''),
-                previousHospitalCode: isChangedDrug ? oldHospitalCode : (baseSlot?.previousHospitalCode || ''),
-                changeDetected: isChangedDrug ? true : !!baseSlot?.changeDetected,
-                changeAcknowledged: isChangedDrug ? false : (baseSlot?.changeAcknowledged !== undefined ? !!baseSlot.changeAcknowledged : true),
-                lastChangedAt: isChangedDrug ? now : (baseSlot?.lastChangedAt || ''),
-                lastChangedBy: isChangedDrug ? currentUserName : (baseSlot?.lastChangedBy || ''),
-                lastChangedByRole: isChangedDrug ? currentUserRole : (baseSlot?.lastChangedByRole || ''),
-                acknowledgedBy: isChangedDrug ? '' : (baseSlot?.acknowledgedBy || ''),
-                acknowledgedAt: isChangedDrug ? '' : (baseSlot?.acknowledgedAt || '')
+
+                previousDrugName: baseSlot?.previousDrugName || "",
+                previousHospitalCode: baseSlot?.previousHospitalCode || "",
+
+                changeDetected: false,
+                changeAcknowledged: true,
+                lastChangedAt: baseSlot?.lastChangedAt || "",
+                lastChangedBy: baseSlot?.lastChangedBy || "",
+                lastChangedByRole: baseSlot?.lastChangedByRole || "",
+                acknowledgedBy: baseSlot?.acknowledgedBy || "",
+                acknowledgedAt: baseSlot?.acknowledgedAt || "",
+
+                pendingDrugName: "",
+                pendingHospitalCode: "",
+                pendingTradeName: "",
+                pendingGenericName: "",
+                pendingDosageForm: "",
+                pendingStrength: "",
+                pendingDetail: "",
+                pendingChangedBy: "",
+                pendingChangedByRole: "",
+                pendingChangedAt: ""
             };
         }
 
-        function writeChangeLog(slotIndex, oldSlot, newSlot) {
+        function createPendingSwapUpdate(baseSlot, selectedName, drugInfo) {
+            const now = getNowDisplay();
+            const oldName = baseSlot?.name || "";
+            const oldHospitalCode = baseSlot?.hospitalCode || "";
+
+            return {
+                ...baseSlot,
+                editedBy: currentUserName,
+
+                previousDrugName: oldName,
+                previousHospitalCode: oldHospitalCode,
+
+                changeDetected: true,
+                changeAcknowledged: false,
+                lastChangedAt: now,
+                lastChangedBy: currentUserName,
+                lastChangedByRole: currentUserRole,
+                acknowledgedBy: "",
+                acknowledgedAt: "",
+
+                pendingDrugName: selectedName,
+                pendingHospitalCode: drugInfo?.hospitalCode || drugInfo?.code || '',
+                pendingTradeName: drugInfo?.tradeName || selectedName || '',
+                pendingGenericName: drugInfo?.genericName || '',
+                pendingDosageForm: drugInfo?.dosageForm || '',
+                pendingStrength: drugInfo?.strength || '',
+                pendingDetail: buildDrugDetailHtml(drugInfo),
+                pendingChangedBy: currentUserName,
+                pendingChangedByRole: currentUserRole,
+                pendingChangedAt: now
+            };
+        }
+
+        function writeChangeLog(slotIndex, oldSlot, payloadType, newSlotLike) {
             const logRef = ref(db, 'slotChangeLogs');
             const payload = {
                 slotNumber: slotIndex + 1,
                 oldDrugName: oldSlot?.name || '',
-                newDrugName: newSlot?.name || '',
+                newDrugName: payloadType === 'pending' ? (newSlotLike?.pendingDrugName || '') : (newSlotLike?.name || ''),
                 oldHospitalCode: oldSlot?.hospitalCode || '',
-                newHospitalCode: newSlot?.hospitalCode || '',
+                newHospitalCode: payloadType === 'pending' ? (newSlotLike?.pendingHospitalCode || '') : (newSlotLike?.hospitalCode || ''),
                 changedBy: currentUserName,
                 changedByRole: currentUserRole,
-                changedAt: newSlot?.lastChangedAt || getNowDisplay(),
-                status: 'pending_acknowledgement'
+                changedAt: getNowDisplay(),
+                status: payloadType === 'pending' ? 'pending_acknowledgement' : 'acknowledged'
             };
 
             push(logRef, payload).catch((err) => {
@@ -1026,20 +1069,71 @@
             });
         }
 
-        function commitSelectedMedicine(selectedName, drugInfo, isChangedDrug) {
+        function commitInitialSelectedMedicine(selectedName, drugInfo) {
             if (!slotsData[currentSlotIndex]) return;
 
             const baseSlot = { ...slotsData[currentSlotIndex] };
-            const updatedSlot = createUpdatedSlot(baseSlot, selectedName, drugInfo, isChangedDrug);
+            const updatedSlot = createInitialSlotUpdate(baseSlot, selectedName, drugInfo);
 
             slotsData[currentSlotIndex] = updatedSlot;
-
             renderSlots();
             saveSlotsToFirebase();
+        }
 
-            if (isChangedDrug) {
-                writeChangeLog(currentSlotIndex, baseSlot, updatedSlot);
-            }
+        function commitPendingSwap(selectedName, drugInfo) {
+            if (!slotsData[currentSlotIndex]) return;
+
+            const baseSlot = { ...slotsData[currentSlotIndex] };
+            const updatedSlot = createPendingSwapUpdate(baseSlot, selectedName, drugInfo);
+
+            slotsData[currentSlotIndex] = updatedSlot;
+            renderSlots();
+            saveSlotsToFirebase();
+            writeChangeLog(currentSlotIndex, baseSlot, 'pending', updatedSlot);
+        }
+
+        function applyAcknowledgedPendingChange(index) {
+            const slot = slotsData[index];
+            if (!slot || !slot.pendingDrugName) return;
+
+            const now = getNowDisplay();
+
+            const updatedSlot = {
+                ...slot,
+                name: slot.pendingDrugName,
+                hospitalCode: slot.pendingHospitalCode,
+                tradeName: slot.pendingTradeName,
+                genericName: slot.pendingGenericName,
+                dosageForm: slot.pendingDosageForm,
+                strength: slot.pendingStrength,
+                detail: slot.pendingDetail,
+                createdAt: slot.pendingChangedAt || now,
+                editedBy: slot.pendingChangedBy || currentUserName,
+
+                changeDetected: true,
+                changeAcknowledged: true,
+                lastChangedAt: slot.pendingChangedAt || now,
+                lastChangedBy: slot.pendingChangedBy || currentUserName,
+                lastChangedByRole: slot.pendingChangedByRole || currentUserRole,
+                acknowledgedBy: currentUserName,
+                acknowledgedAt: now,
+
+                pendingDrugName: "",
+                pendingHospitalCode: "",
+                pendingTradeName: "",
+                pendingGenericName: "",
+                pendingDosageForm: "",
+                pendingStrength: "",
+                pendingDetail: "",
+                pendingChangedBy: "",
+                pendingChangedByRole: "",
+                pendingChangedAt: ""
+            };
+
+            slotsData[index] = updatedSlot;
+            renderSlots();
+            saveSlotsToFirebase();
+            writeChangeLog(index, slot, 'acknowledged', updatedSlot);
         }
 
         function openSwapConfirmModal(payload) {
@@ -1056,17 +1150,13 @@
         function closeSwapConfirmModal() {
             const modalEl = document.getElementById('confirmSwapModal');
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
+            if (modalInstance) modalInstance.hide();
         }
 
         function closeSelectMedModal() {
             const modalEl = document.getElementById('selectMedModal');
             const modalInstance = bootstrap.Modal.getInstance(modalEl);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
+            if (modalInstance) modalInstance.hide();
         }
 
         function renderSlots() {
@@ -1076,17 +1166,22 @@
             slotsData.forEach((slotItem, index) => {
                 const filled = slotItem.name !== "Empty Slot";
                 const displayNum = String(index + 1).padStart(2, '0');
+
                 const createdTime = slotItem.createdAt
                     ? `<div class="text-muted mt-2" style="font-size:0.75rem"><i class="far fa-clock me-1"></i> ${slotItem.createdAt}</div>`
                     : '';
+
                 const editorInfo = slotItem.editedBy
                     ? `<div class="user-edit-badge" title="Last edited by ${slotItem.editedBy}"><i class="fas fa-user-edit me-1"></i> ${slotItem.editedBy}</div>`
                     : '';
 
                 const cleanSlotName = (slotItem.name || '').split(' [รหัส:')[0];
                 const detailHtml = `<div class="med-detail">${slotItem.detail || '-'}</div>`;
-                const changeBadge = slotItem.changeDetected && !slotItem.changeAcknowledged
-                    ? `<div class="change-alert-badge"><i class="fas fa-rotate me-1"></i>มีการเปลี่ยนยา</div>`
+
+                const hasPendingChange = !!slotItem.pendingDrugName;
+
+                const changeBadge = hasPendingChange
+                    ? `<div class="change-alert-badge"><i class="fas fa-rotate me-1"></i>มีการเปลี่ยนยารอรับทราบ</div>`
                     : '';
 
                 const changeSummary = slotItem.changeDetected
@@ -1101,6 +1196,19 @@
                     `
                     : '';
 
+                const pendingBox = hasPendingChange
+                    ? `
+                        <div class="change-summary-box">
+                            <div class="change-summary-title"><i class="fas fa-hourglass-half me-1"></i>รายการที่รอรับทราบ</div>
+                            <div><strong>ชื่อยาปัจจุบัน:</strong> ${cleanSlotName || '-'}</div>
+                            <div><strong>ชื่อยาใหม่:</strong> ${slotItem.pendingDrugName || '-'}</div>
+                            <div><strong>รหัสใหม่:</strong> ${slotItem.pendingHospitalCode || '-'}</div>
+                            <div><strong>เปลี่ยนโดย:</strong> ${slotItem.pendingChangedBy || '-'}${slotItem.pendingChangedByRole ? ` (${slotItem.pendingChangedByRole})` : ''}</div>
+                            <div><strong>เวลา:</strong> ${slotItem.pendingChangedAt || '-'}</div>
+                        </div>
+                    `
+                    : '';
+
                 const acknowledgedBox = slotItem.changeDetected && slotItem.changeAcknowledged
                     ? `
                         <div class="acknowledged-box">
@@ -1110,13 +1218,13 @@
                     `
                     : '';
 
-                const ackButton = slotItem.changeDetected && !slotItem.changeAcknowledged
+                const ackButton = hasPendingChange
                     ? `<button class="btn-acknowledge" onclick="acknowledgeSlotChange(${index})"><i class="fas fa-check-double me-1"></i>รับทราบการเปลี่ยน</button>`
                     : '';
 
                 const cardHTML = `
                     <div class="col-md-6">
-                        <div class="medicine-card ${slotItem.changeDetected && !slotItem.changeAcknowledged ? 'slot-changed-card' : ''}" id="card-${index}" style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}">
+                        <div class="medicine-card ${hasPendingChange ? 'slot-changed-card' : ''}" id="card-${index}" style="${filled ? "" : "border-style:dashed;background:rgba(255,255,255,0.4);"}">
                             <div class="btn-fab-delete" onclick="deleteSlot(${index})" title="ลบ Slot นี้"><i class="fas fa-trash"></i></div>
                             <div class="slot-badge-label" style="${filled ? "" : "background:#95a5a6;"}">SLOT ${displayNum}</div>
                             ${changeBadge}
@@ -1126,6 +1234,7 @@
                                 ${detailHtml}
                                 ${createdTime}
                                 ${editorInfo}
+                                ${pendingBox}
                                 ${changeSummary}
                                 ${acknowledgedBox}
                                 ${ackButton}
@@ -1149,21 +1258,12 @@
 
                     if (snapshot.exists()) {
                         const userData = snapshot.val();
-                        if (userData.name) {
-                            displayName = userData.name;
-                        }
-                        if (userData.role) {
-                            role = userData.role;
-                        }
+                        if (userData.name) displayName = userData.name;
+                        if (userData.role) role = userData.role;
                     }
 
-                    if (!displayName && user.displayName) {
-                        displayName = user.displayName;
-                    }
-
-                    if (!displayName) {
-                        displayName = user.email;
-                    }
+                    if (!displayName && user.displayName) displayName = user.displayName;
+                    if (!displayName) displayName = user.email;
 
                     currentUserName = displayName;
                     currentUserRole = role;
@@ -1314,15 +1414,28 @@
                 genericName: "",
                 dosageForm: "",
                 strength: "",
+
                 previousDrugName: "",
                 previousHospitalCode: "",
+
                 changeDetected: false,
                 changeAcknowledged: true,
                 lastChangedAt: "",
                 lastChangedBy: "",
                 lastChangedByRole: "",
                 acknowledgedBy: "",
-                acknowledgedAt: ""
+                acknowledgedAt: "",
+
+                pendingDrugName: "",
+                pendingHospitalCode: "",
+                pendingTradeName: "",
+                pendingGenericName: "",
+                pendingDosageForm: "",
+                pendingStrength: "",
+                pendingDetail: "",
+                pendingChangedBy: "",
+                pendingChangedByRole: "",
+                pendingChangedAt: ""
             });
 
             renderSlots();
@@ -1368,7 +1481,7 @@
                 return;
             }
 
-            commitSelectedMedicine(selectedName, drugInfo, false);
+            commitInitialSelectedMedicine(selectedName, drugInfo);
             closeSelectMedModal();
         };
 
@@ -1384,7 +1497,7 @@
                 return;
             }
 
-            commitSelectedMedicine(pendingSwapPayload.selectedName, pendingSwapPayload.drugInfo, true);
+            commitPendingSwap(pendingSwapPayload.selectedName, pendingSwapPayload.drugInfo);
             pendingSwapPayload = null;
             closeSwapConfirmModal();
             closeSelectMedModal();
@@ -1392,23 +1505,14 @@
 
         window.acknowledgeSlotChange = function (index) {
             const slot = slotsData[index];
-            if (!slot || !slot.changeDetected || slot.changeAcknowledged) return;
+            if (!slot || !slot.pendingDrugName) return;
 
-            if ((slot.lastChangedBy || '').trim() === (currentUserName || '').trim()) {
+            if ((slot.pendingChangedBy || '').trim() === (currentUserName || '').trim()) {
                 alert('ผู้ที่เปลี่ยนรายการไม่สามารถรับทราบรายการเดียวกันได้ กรุณาให้ผู้ใช้อีกคนเป็นผู้รับทราบ');
                 return;
             }
 
-            const now = getNowDisplay();
-            slotsData[index] = {
-                ...slot,
-                changeAcknowledged: true,
-                acknowledgedBy: currentUserName,
-                acknowledgedAt: now
-            };
-
-            renderSlots();
-            saveSlotsToFirebase();
+            applyAcknowledgedPendingChange(index);
         };
 
         window.prepareA4Print = function () {
