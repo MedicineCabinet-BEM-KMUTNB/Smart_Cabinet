@@ -161,7 +161,7 @@
            </div>
            <small class="text-muted mt-2 d-block">
                * ไฟล์ควรมีหัวตารางอย่างน้อย:
-               <b>Trade Name, Generic Name, Dosage Form, Strength, TPU Code, Equipment Number</b>
+               <b>Trade Name, Generic Name, Dosage Form, Strength, TPU Code, Asset Number</b>
            </small>
        </div>
 
@@ -203,8 +203,8 @@
                    <input type="text" id="TPUCode" class="form-control" placeholder="รหัสยามาตรฐานไทย">
                </div>
                <div class="col-md-6">
-                   <label class="small mb-1">เลขครุภัณฑ์ (Equipment Number)</label>
-                   <input type="text" id="equipmentNumber" class="form-control" placeholder="เช่น EQ-000123">
+                   <label class="small mb-1">เลขครุภัณฑ์ (Asset Number)</label>
+                   <input type="text" id="assetNumber" class="form-control" placeholder="เช่น ASSET-000123">
                </div>
            </div>
 
@@ -316,7 +316,7 @@
                        const dosageForm = row['Dosage Form'] || row['dosageForm'] || row['DosageForm'] || row['รูปแบบ'] || '';
                        const strength = row['Strength'] || row['strength'] || row['ความแรง'] || '';
                        const TPUCode = row['TPU Code'] || row['TPUCode'] || row['รหัสยามาตรฐานไทย'] || '';
-                       const equipmentNumber = row['Equipment Number'] || row['equipmentNumber'] || row['EquipmentNumber'] || row['เลขครุภัณฑ์'] || '';
+                       const assetNumber = row['Asset Number'] || row['assetNumber'] || row['AssetNumber'] || row['เลขครุภัณฑ์'] || '';
 
                        if (!tradeName || !genericName || !dosageForm || !strength) {
                            console.warn("ข้อมูลไม่ครบถ้วน ข้ามแถว:", row);
@@ -339,7 +339,7 @@
                            dosageForm: String(dosageForm).trim(),
                            strength: String(strength).trim(),
                            TPUCode: String(TPUCode).trim(),
-                           equipmentNumber: String(equipmentNumber).trim(),
+                           assetNumber: String(assetNumber).trim(),
                            hospitalCode: hospitalCode,
                            createdAt: timeStr,
                            lastEditedAt: timeStr,
@@ -396,7 +396,7 @@
                dosageForm: document.getElementById('dosageForm').value.trim(),
                strength: document.getElementById('strength').value.trim(),
                TPUCode: document.getElementById('TPUCode').value.trim(),
-               equipmentNumber: document.getElementById('equipmentNumber').value.trim(),
+               assetNumber: document.getElementById('assetNumber').value.trim(),
                hospitalCode: hospitalCode,
                createdAt: timeStr,
                lastEditedAt: timeStr,
