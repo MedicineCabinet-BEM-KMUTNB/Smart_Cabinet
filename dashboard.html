@@ -55,7 +55,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+            background-image: url(\"data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
             pointer-events: none;
             z-index: -1;
         }
@@ -373,21 +373,26 @@
         }
 
         .glam-select {
-            border-radius: 18px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.8));
-            font-family: 'Kanit', sans-serif;
-            font-size: 0.95rem;
-            padding: 12px 16px;
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%232c3e50' class='bi bi-chevron-down' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 16px center;
-            background-size: 16px;
-            padding-right: 40px;
-            cursor: pointer;
-        }
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background: #ffffff;
+    font-family: 'Kanit', sans-serif;
+    font-size: 0.95rem;
+    padding: 12px 48px 12px 16px;
+    cursor: pointer;
 
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16' fill='none'><path d='M4 6L8 10L12 6' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 16px;
+}
+.glam-select::-ms-expand {
+    display: none;
+}
         .btn-manage-list {
             border-radius: 999px;
             border: 1px solid rgba(255, 255, 255, 0.85);
@@ -759,9 +764,13 @@
                             <span class="confirm-label">รหัสเดิม</span>
                             <span class="confirm-value" id="confirmOldCode">-</span>
                         </div>
-                        <div class="confirm-row" style="margin-bottom:0;">
+                        <div class="confirm-row">
                             <span class="confirm-label">รหัสใหม่</span>
                             <span class="confirm-value" id="confirmNewCode">-</span>
+                        </div>
+                        <div class="confirm-row" style="margin-bottom:0;">
+                            <span class="confirm-label">เลขครุภัณฑ์ใหม่</span>
+                            <span class="confirm-value" id="confirmNewAssetNumber">-</span>
                         </div>
                     </div>
 
@@ -908,6 +917,7 @@
                 createdAt: slot?.createdAt || "",
                 editedBy: slot?.editedBy || "",
                 hospitalCode: slot?.hospitalCode || "",
+                assetNumber: slot?.assetNumber || "",
                 tradeName: slot?.tradeName || "",
                 genericName: slot?.genericName || "",
                 dosageForm: slot?.dosageForm || "",
@@ -915,6 +925,7 @@
 
                 previousDrugName: slot?.previousDrugName || "",
                 previousHospitalCode: slot?.previousHospitalCode || "",
+                previousAssetNumber: slot?.previousAssetNumber || "",
 
                 changeDetected: !!slot?.changeDetected,
                 changeAcknowledged: slot?.changeAcknowledged !== undefined ? !!slot.changeAcknowledged : true,
@@ -926,6 +937,7 @@
 
                 pendingDrugName: slot?.pendingDrugName || "",
                 pendingHospitalCode: slot?.pendingHospitalCode || "",
+                pendingAssetNumber: slot?.pendingAssetNumber || "",
                 pendingTradeName: slot?.pendingTradeName || "",
                 pendingGenericName: slot?.pendingGenericName || "",
                 pendingDosageForm: slot?.pendingDosageForm || "",
@@ -960,6 +972,8 @@
             const generic = drugInfo.genericName || '-';
             const form = drugInfo.dosageForm || '-';
             const strength = drugInfo.strength || '-';
+            const hospitalCode = drugInfo.hospitalCode || drugInfo.code || '-';
+            const assetNumber = drugInfo.assetNumber || '-';
 
             return `
                 <div class="med-detail-list">
@@ -975,6 +989,14 @@
                         <span class="med-detail-label">ขนาด:</span>
                         <span class="med-detail-value">${strength}</span>
                     </div>
+                    <div class="med-detail-row">
+                        <span class="med-detail-label">Hospital Code:</span>
+                        <span class="med-detail-value">${hospitalCode}</span>
+                    </div>
+                    <div class="med-detail-row">
+                        <span class="med-detail-label">เลขครุภัณฑ์:</span>
+                        <span class="med-detail-value">${assetNumber}</span>
+                    </div>
                 </div>
             `;
         }
@@ -985,6 +1007,7 @@
                 ...baseSlot,
                 name: selectedName,
                 hospitalCode: drugInfo?.hospitalCode || drugInfo?.code || '',
+                assetNumber: drugInfo?.assetNumber || '',
                 tradeName: drugInfo?.tradeName || selectedName || '',
                 genericName: drugInfo?.genericName || '',
                 dosageForm: drugInfo?.dosageForm || '',
@@ -995,6 +1018,7 @@
 
                 previousDrugName: baseSlot?.previousDrugName || "",
                 previousHospitalCode: baseSlot?.previousHospitalCode || "",
+                previousAssetNumber: baseSlot?.previousAssetNumber || "",
 
                 changeDetected: false,
                 changeAcknowledged: true,
@@ -1006,6 +1030,7 @@
 
                 pendingDrugName: "",
                 pendingHospitalCode: "",
+                pendingAssetNumber: "",
                 pendingTradeName: "",
                 pendingGenericName: "",
                 pendingDosageForm: "",
@@ -1021,6 +1046,7 @@
             const now = getNowDisplay();
             const oldName = baseSlot?.name || "";
             const oldHospitalCode = baseSlot?.hospitalCode || "";
+            const oldAssetNumber = baseSlot?.assetNumber || "";
 
             return {
                 ...baseSlot,
@@ -1028,6 +1054,7 @@
 
                 previousDrugName: oldName,
                 previousHospitalCode: oldHospitalCode,
+                previousAssetNumber: oldAssetNumber,
 
                 changeDetected: true,
                 changeAcknowledged: false,
@@ -1039,6 +1066,7 @@
 
                 pendingDrugName: selectedName,
                 pendingHospitalCode: drugInfo?.hospitalCode || drugInfo?.code || '',
+                pendingAssetNumber: drugInfo?.assetNumber || '',
                 pendingTradeName: drugInfo?.tradeName || selectedName || '',
                 pendingGenericName: drugInfo?.genericName || '',
                 pendingDosageForm: drugInfo?.dosageForm || '',
@@ -1058,6 +1086,8 @@
                 newDrugName: payloadType === 'pending' ? (newSlotLike?.pendingDrugName || '') : (newSlotLike?.name || ''),
                 oldHospitalCode: oldSlot?.hospitalCode || '',
                 newHospitalCode: payloadType === 'pending' ? (newSlotLike?.pendingHospitalCode || '') : (newSlotLike?.hospitalCode || ''),
+                oldAssetNumber: oldSlot?.assetNumber || '',
+                newAssetNumber: payloadType === 'pending' ? (newSlotLike?.pendingAssetNumber || '') : (newSlotLike?.assetNumber || ''),
                 changedBy: currentUserName,
                 changedByRole: currentUserRole,
                 changedAt: getNowDisplay(),
@@ -1102,6 +1132,7 @@
                 ...slot,
                 name: slot.pendingDrugName,
                 hospitalCode: slot.pendingHospitalCode,
+                assetNumber: slot.pendingAssetNumber,
                 tradeName: slot.pendingTradeName,
                 genericName: slot.pendingGenericName,
                 dosageForm: slot.pendingDosageForm,
@@ -1120,6 +1151,7 @@
 
                 pendingDrugName: "",
                 pendingHospitalCode: "",
+                pendingAssetNumber: "",
                 pendingTradeName: "",
                 pendingGenericName: "",
                 pendingDosageForm: "",
@@ -1143,6 +1175,7 @@
             document.getElementById('confirmNewDrug').textContent = payload.newDrugName || '-';
             document.getElementById('confirmOldCode').textContent = payload.oldHospitalCode || '-';
             document.getElementById('confirmNewCode').textContent = payload.newHospitalCode || '-';
+            document.getElementById('confirmNewAssetNumber').textContent = payload.newAssetNumber || '-';
             document.getElementById('confirmSwapCheckbox').checked = false;
             new bootstrap.Modal(document.getElementById('confirmSwapModal')).show();
         }
@@ -1177,7 +1210,6 @@
 
                 const cleanSlotName = (slotItem.name || '').split(' [รหัส:')[0];
                 const detailHtml = `<div class="med-detail">${slotItem.detail || '-'}</div>`;
-
                 const hasPendingChange = !!slotItem.pendingDrugName;
 
                 const changeBadge = hasPendingChange
@@ -1190,6 +1222,8 @@
                             <div class="change-summary-title"><i class="fas fa-bell me-1"></i>ประวัติการเปลี่ยนล่าสุด</div>
                             <div><strong>เดิม:</strong> ${slotItem.previousDrugName || '-'}</div>
                             <div><strong>ปัจจุบัน:</strong> ${cleanSlotName || '-'}</div>
+                            <div><strong>Hospital Code เดิม:</strong> ${slotItem.previousHospitalCode || '-'}</div>
+                            <div><strong>เลขครุภัณฑ์เดิม:</strong> ${slotItem.previousAssetNumber || '-'}</div>
                             <div><strong>เปลี่ยนโดย:</strong> ${slotItem.lastChangedBy || '-'}${slotItem.lastChangedByRole ? ` (${slotItem.lastChangedByRole})` : ''}</div>
                             <div><strong>เวลา:</strong> ${slotItem.lastChangedAt || '-'}</div>
                         </div>
@@ -1203,6 +1237,7 @@
                             <div><strong>ชื่อยาปัจจุบัน:</strong> ${cleanSlotName || '-'}</div>
                             <div><strong>ชื่อยาใหม่:</strong> ${slotItem.pendingDrugName || '-'}</div>
                             <div><strong>รหัสใหม่:</strong> ${slotItem.pendingHospitalCode || '-'}</div>
+                            <div><strong>เลขครุภัณฑ์ใหม่:</strong> ${slotItem.pendingAssetNumber || '-'}</div>
                             <div><strong>เปลี่ยนโดย:</strong> ${slotItem.pendingChangedBy || '-'}${slotItem.pendingChangedByRole ? ` (${slotItem.pendingChangedByRole})` : ''}</div>
                             <div><strong>เวลา:</strong> ${slotItem.pendingChangedAt || '-'}</div>
                         </div>
@@ -1318,6 +1353,10 @@
                             drugItem.hospitalCode = key;
                         }
 
+                        if (!drugItem.assetNumber) {
+                            drugItem.assetNumber = "";
+                        }
+
                         medDataMap[drugName] = drugItem;
 
                         const opt = document.createElement("option");
@@ -1329,6 +1368,7 @@
                         const generic = drugItem.genericName || '-';
                         const form = drugItem.dosageForm || '-';
                         const strength = drugItem.strength || '-';
+                        const assetNumber = drugItem.assetNumber || '-';
 
                         const li = document.createElement("li");
                         li.className = "list-group-item d-flex justify-content-between align-items-center mb-2";
@@ -1345,6 +1385,7 @@
                                         <span class="d-inline-block me-2 border rounded px-1 bg-light">รูปแบบ: ${form}</span>
                                         <span class="d-inline-block me-2 border rounded px-1 bg-light">ขนาด: ${strength}</span>
                                         <span class="d-inline-block me-2 border rounded px-1 bg-light">Code: ${drugItem.hospitalCode || '-'}</span>
+                                        <span class="d-inline-block me-2 border rounded px-1 bg-light">ครุภัณฑ์: ${assetNumber}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1410,6 +1451,7 @@
                 createdAt: now,
                 editedBy: currentUserName,
                 hospitalCode: "",
+                assetNumber: "",
                 tradeName: "",
                 genericName: "",
                 dosageForm: "",
@@ -1417,6 +1459,7 @@
 
                 previousDrugName: "",
                 previousHospitalCode: "",
+                previousAssetNumber: "",
 
                 changeDetected: false,
                 changeAcknowledged: true,
@@ -1428,6 +1471,7 @@
 
                 pendingDrugName: "",
                 pendingHospitalCode: "",
+                pendingAssetNumber: "",
                 pendingTradeName: "",
                 pendingGenericName: "",
                 pendingDosageForm: "",
@@ -1465,6 +1509,7 @@
             const oldName = currentSlot.name || '';
             const oldCode = currentSlot.hospitalCode || '';
             const newCode = drugInfo?.hospitalCode || drugInfo?.code || '';
+            const newAssetNumber = drugInfo?.assetNumber || '';
             const normalizedOldName = oldName === 'Empty Slot' ? '' : oldName;
             const isChangedDrug = !!normalizedOldName && normalizedOldName !== selectedName;
 
@@ -1475,6 +1520,7 @@
                     newDrugName: selectedName,
                     oldHospitalCode: oldCode,
                     newHospitalCode: newCode,
+                    newAssetNumber,
                     selectedName,
                     drugInfo
                 });
