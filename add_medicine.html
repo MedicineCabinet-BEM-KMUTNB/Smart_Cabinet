@@ -161,7 +161,7 @@
            </div>
            <small class="text-muted mt-2 d-block">
                * ไฟล์ควรมีหัวตารางอย่างน้อย:
-               <b>Trade Name, Generic Name, Dosage Form, Strength, TPU Code, Asset Number</b>
+               <b>Trade Name, Generic Name, Dosage Form, Strength, Asset Number</b>
            </small>
        </div>
 
@@ -198,13 +198,9 @@
            </div>
 
            <div class="row">
-               <div class="col-md-6">
-                   <label class="small mb-1">รหัสยามาตรฐานไทย (TPU Code)</label>
-                   <input type="text" id="TPUCode" class="form-control" placeholder="รหัสยามาตรฐานไทย">
-               </div>
-               <div class="col-md-6">
+               <div class="col-md-12">
                    <label class="small mb-1">เลขครุภัณฑ์ (Asset Number)</label>
-                   <input type="text" id="assetNumber" class="form-control" placeholder="เช่น ASSET-000123">
+                   <input type="text" id="assetNumber" class="form-control" placeholder="เช่น ASSET-000123" required>
                </div>
            </div>
 
@@ -315,10 +311,9 @@
                        const genericName = row['Generic Name'] || row['genericName'] || row['GenericName'] || row['ชื่อสามัญ'] || '';
                        const dosageForm = row['Dosage Form'] || row['dosageForm'] || row['DosageForm'] || row['รูปแบบ'] || '';
                        const strength = row['Strength'] || row['strength'] || row['ความแรง'] || '';
-                       const TPUCode = row['TPU Code'] || row['TPUCode'] || row['รหัสยามาตรฐานไทย'] || '';
                        const assetNumber = row['Asset Number'] || row['assetNumber'] || row['AssetNumber'] || row['เลขครุภัณฑ์'] || '';
 
-                       if (!tradeName || !genericName || !dosageForm || !strength) {
+                       if (!tradeName || !genericName || !dosageForm || !strength || !assetNumber) {
                            console.warn("ข้อมูลไม่ครบถ้วน ข้ามแถว:", row);
                            errorCount++;
                            continue;
@@ -338,7 +333,6 @@
                            genericName: String(genericName).trim(),
                            dosageForm: String(dosageForm).trim(),
                            strength: String(strength).trim(),
-                           TPUCode: String(TPUCode).trim(),
                            assetNumber: String(assetNumber).trim(),
                            hospitalCode: hospitalCode,
                            createdAt: timeStr,
@@ -395,7 +389,6 @@
                genericName: document.getElementById('genericName').value.trim(),
                dosageForm: document.getElementById('dosageForm').value.trim(),
                strength: document.getElementById('strength').value.trim(),
-               TPUCode: document.getElementById('TPUCode').value.trim(),
                assetNumber: document.getElementById('assetNumber').value.trim(),
                hospitalCode: hospitalCode,
                createdAt: timeStr,
